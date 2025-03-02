@@ -21,9 +21,7 @@
                         <div class="form-group mb-3">
                             <label for="image">Kategori Görseli</label>
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                            <div id="imagePreview" class="mt-2" style="display:none;">
-                                <img src="" alt="Önizleme" class="img-thumbnail" style="max-height: 150px;">
-                            </div>
+                            <small class="text-muted">Önerilen boyut: 800x600px</small>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Kaydet</button>
