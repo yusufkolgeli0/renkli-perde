@@ -26,12 +26,13 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
                 <div class="category-sidebar">
                     <h4 class="category-title">Kategorilerimiz</h4>
                     <div class="category-cards">
-                        <a href="?category=all" class="category-card <?php echo $selected_category == 'all' ? 'active' : ''; ?>">
-                            <div class="category-card-bg" style="background-image: url('assets/img/all-categories.jpg');">
-                                <div class="category-card-overlay"></div>
+                        <a href="kategori-detay.php" class="category-card <?php echo $selected_category == 'all' ? 'active' : ''; ?>">
+                            <div class="category-card-image">
+                                <div class="category-card-bg" style="background-image: url('assets/img/all-categories.jpg');">
+                                    <div class="category-card-overlay"></div>
+                                </div>
                             </div>
                             <div class="category-card-content">
-                                <i class="fas fa-images"></i>
                                 <h5>Tüm Görseller</h5>
                             </div>
                         </a>
@@ -40,16 +41,16 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
                         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
                         while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
                             $isActive = $selected_category == $category['id'] ? 'active' : '';
-                            // Kategori resmini kontrol et, yoksa varsayılan resmi kullan
                             $categoryImage = !empty($category['image']) ? 'images/categories/'.$category['image'] : 'assets/img/default-category.jpg';
                             ?>
-                            <a href="?category=<?php echo $category['id']; ?>" 
+                            <a href="kategori-detay.php?id=<?php echo $category['id']; ?>" 
                                class="category-card <?php echo $isActive; ?>">
-                                <div class="category-card-bg" style="background-image: url('<?php echo $categoryImage; ?>');">
-                                    <div class="category-card-overlay"></div>
+                                <div class="category-card-image">
+                                    <div class="category-card-bg" style="background-image: url('<?php echo $categoryImage; ?>');">
+                                        <div class="category-card-overlay"></div>
+                                    </div>
                                 </div>
                                 <div class="category-card-content">
-                                    <i class="fas fa-folder"></i>
                                     <h5><?php echo htmlspecialchars($category['name']); ?></h5>
                                 </div>
                             </a>
@@ -129,40 +130,43 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
 
     /* Kategori Sidebar Stilleri */
     .category-sidebar {
-        background: var(--antracite);
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        background: var(--text-light);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
 
     .category-title {
-        color: var(--text-light);
+        color: var(--antracite);
         font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--antracite-light);
+        font-weight: 500;
+        margin-bottom: 2rem;
         text-align: center;
+        letter-spacing: -0.5px;
     }
 
     .category-cards {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
     }
 
     .category-card {
         position: relative;
-        aspect-ratio: 1;
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
     }
 
-    .category-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    .category-card-image {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
     }
 
     .category-card-bg {
@@ -173,7 +177,7 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
         height: 100%;
         background-size: cover;
         background-position: center;
-        transition: all 0.3s ease;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .category-card-overlay {
@@ -182,102 +186,169 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(to bottom, 
-            rgba(30, 36, 40, 0.7),
-            rgba(30, 36, 40, 0.9)
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.2),
+            rgba(0, 0, 0, 0.4)
         );
-        transition: all 0.3s ease;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border-color: transparent;
+    }
+
+    .category-card:hover .category-card-overlay {
+        opacity: 1;
     }
 
     .category-card:hover .category-card-bg {
-        transform: scale(1.1);
+        transform: scale(1.08);
     }
 
     .category-card-content {
-        position: relative;
-        z-index: 2;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
+        padding: 16px;
         text-align: center;
+        background: linear-gradient(135deg, #6e8efb, #4a90e2);
+        position: relative;
+        overflow: hidden;
     }
 
-    .category-card i {
-        font-size: 2rem;
-        color: var(--text-light);
-        margin-bottom: 10px;
-        transition: all 0.3s ease;
+    .category-card-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, 
+            rgba(110, 142, 251, 0.8), 
+            rgba(74, 144, 226, 0.8)
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
     }
 
     .category-card h5 {
         color: var(--text-light);
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: 500;
+        line-height: 1.4;
         transition: all 0.3s ease;
-        line-height: 1.3;
+        position: relative;
+        z-index: 1;
+    }
+
+    .category-card:nth-child(3n+1) .category-card-content {
+        background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+    }
+
+    .category-card:nth-child(3n+2) .category-card-content {
+        background: linear-gradient(135deg, #4ECDC4, #45B7AF);
+    }
+
+    .category-card:nth-child(3n+3) .category-card-content {
+        background: linear-gradient(135deg, #6E8EFB, #4A90E2);
+    }
+
+    .category-card:hover .category-card-content::before {
+        opacity: 1;
+    }
+
+    .category-card.active .category-card-content {
+        background: linear-gradient(135deg, var(--accent-color), #2d7ed9);
+    }
+
+    .category-card.active .category-card-content::before {
+        background: linear-gradient(135deg,
+            rgba(74, 144, 226, 0.9),
+            rgba(45, 126, 217, 0.9)
+        );
+    }
+
+    .category-card.active h5 {
+        color: var(--text-light);
+        transform: scale(1.05);
     }
 
     .category-card.active {
-        box-shadow: 0 0 0 3px var(--accent-color);
+        border: 2px solid var(--accent-color);
+        box-shadow: 0 10px 25px rgba(74, 144, 226, 0.15);
     }
 
     .category-card.active .category-card-overlay {
-        background: linear-gradient(135deg,
-            rgba(74, 144, 226, 0.8),
-            rgba(74, 144, 226, 0.9)
+        background: linear-gradient(
+            135deg,
+            rgba(74, 144, 226, 0.85),
+            rgba(74, 144, 226, 0.95)
         );
-    }
-
-    /* Hover Efektleri */
-    .category-card:hover .category-card-overlay {
-        background: linear-gradient(135deg,
-            rgba(74, 144, 226, 0.6),
-            rgba(74, 144, 226, 0.8)
-        );
-    }
-
-    .category-card:hover i {
-        transform: scale(1.2);
-    }
-
-    .category-card:hover h5 {
-        transform: translateY(5px);
+        opacity: 1;
     }
 
     /* Responsive Tasarım */
     @media (min-width: 1400px) {
-        .category-cards {
-            grid-template-columns: repeat(2, 1fr);
+        .category-card-content {
+            padding: 20px;
+        }
+        
+        .category-card h5 {
+            font-size: 1.2rem;
         }
     }
 
     @media (max-width: 1200px) {
         .category-cards {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .category-cards {
             grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .category-sidebar {
+            padding: 25px;
         }
     }
 
     @media (max-width: 768px) {
         .category-sidebar {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
         
         .category-cards {
             grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .category-card-content {
+            padding: 14px;
+        }
+        
+        .category-card h5 {
+            font-size: 0.95rem;
         }
     }
 
     @media (max-width: 576px) {
-        .category-cards {
-            grid-template-columns: repeat(2, 1fr);
+        .category-sidebar {
+            padding: 20px;
         }
         
-        .category-card i {
-            font-size: 1.5rem;
+        .category-cards {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .category-card-content {
+            padding: 12px;
         }
         
         .category-card h5 {
