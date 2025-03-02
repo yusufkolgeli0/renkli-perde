@@ -5,24 +5,24 @@
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title mb-0">Kategori Ekle</h3>
+                    <h3 class="card-title mb-0">Kategori Ekle/Düzenle</h3>
                 </div>
                 <div class="card-body">
                     <form id="categoryForm" action="process/save_category.php" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="categoryId">
                         <div class="form-group mb-3">
-                            <label for="name" class="form-label">Kategori Adı</label>
+                            <label for="name">Kategori Adı</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="description" class="form-label">Açıklama</label>
+                            <label for="description">Açıklama</label>
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="image" class="form-label">Kategori Görseli</label>
+                            <label for="image">Kategori Görseli</label>
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                            <div class="image-preview-container mt-2" style="display: none;">
-                                <img src="" alt="Önizleme" id="imagePreview" class="img-fluid rounded">
+                            <div id="imagePreview" class="mt-2" style="display:none;">
+                                <img src="" alt="Önizleme" class="img-thumbnail" style="max-height: 150px;">
                             </div>
                         </div>
                         <div class="form-group">
@@ -51,7 +51,7 @@
                                 </tr>
                             </thead>
                             <tbody id="categoriesList">
-                                <!-- Categories will be loaded dynamically -->
+                                <!-- Kategoriler dinamik olarak yüklenecek -->
                             </tbody>
                         </table>
                     </div>
@@ -61,50 +61,11 @@
     </div>
 </div>
 
-<style>
-.category-image {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
-.image-preview-container {
-    max-width: 200px;
-    margin-top: 10px;
-}
-
-#imagePreview {
-    max-width: 100%;
-    height: auto;
-}
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
     setupImagePreview();
 });
-
-function setupImagePreview() {
-    const imageInput = document.getElementById('image');
-    const previewContainer = document.querySelector('.image-preview-container');
-    const preview = document.getElementById('imagePreview');
-
-    imageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                previewContainer.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        } else {
-            previewContainer.style.display = 'none';
-        }
-    });
-}
 
 function loadCategories() {
     fetch('process/get_categories.php')
@@ -120,7 +81,7 @@ function loadCategories() {
                             <td>
                                 <img src="${category.image ? '../images/categories/' + category.image : '../images/no-image.jpg'}" 
                                      alt="${category.name}" 
-                                     class="category-image">
+                                     style="width: 50px; height: 50px; object-fit: cover;">
                             </td>
                             <td>${category.name}</td>
                             <td>${category.description || '-'}</td>
@@ -140,6 +101,26 @@ function loadCategories() {
         .catch(error => console.error('Error:', error));
 }
 
+function setupImagePreview() {
+    const input = document.getElementById('image');
+    const preview = document.getElementById('imagePreview');
+    const img = preview.querySelector('img');
+
+    input.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+}
+
 function editCategory(id) {
     fetch(`process/get_category.php?id=${id}`)
         .then(response => response.json())
@@ -151,8 +132,9 @@ function editCategory(id) {
                 document.getElementById('description').value = category.description || '';
                 
                 if (category.image) {
-                    document.querySelector('.image-preview-container').style.display = 'block';
-                    document.getElementById('imagePreview').src = '../images/categories/' + category.image;
+                    const preview = document.getElementById('imagePreview');
+                    preview.querySelector('img').src = `../images/categories/${category.image}`;
+                    preview.style.display = 'block';
                 }
             }
         })
@@ -179,7 +161,7 @@ function deleteCategory(id) {
 function resetForm() {
     document.getElementById('categoryForm').reset();
     document.getElementById('categoryId').value = '';
-    document.querySelector('.image-preview-container').style.display = 'none';
+    document.getElementById('imagePreview').style.display = 'none';
 }
 
 // Form submission
