@@ -113,12 +113,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label for="image">Görsel *</label>
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                                <small class="text-muted">Önerilen boyut: 1200x800px</small>
+                                <label for="image">Görseller *</label>
+                                <input type="file" class="form-control" id="image" name="images[]" accept="image/*" required multiple>
+                                <small class="text-muted">Önerilen boyut: 1200x800px. Birden fazla görsel seçebilirsiniz.</small>
                             </div>
-                            <div id="imagePreview" class="mt-3 text-center" style="display: none;">
-                                <img src="" alt="Preview" style="max-width: 100%; height: auto; border-radius: 8px;">
+                            <div id="imagePreview" class="mt-3 row g-2">
+                                <!-- Görsel önizlemeleri burada gösterilecek -->
                             </div>
                         </div>
                     </div>
@@ -290,6 +290,25 @@
     color: #6c757d;
     margin: 0;
 }
+
+.preview-image-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.preview-image-container img {
+    border: 2px solid #dee2e6;
+}
+
+.preview-image-container .btn-danger {
+    padding: 2px 6px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.preview-image-container .btn-danger:hover {
+    opacity: 1;
+}
 </style>
 
 <script>
@@ -304,19 +323,68 @@ function setupImagePreviews() {
     // Yeni görsel ekleme önizlemesi
     document.getElementById('image').addEventListener('change', function(e) {
         const preview = document.getElementById('imagePreview');
-        const img = preview.querySelector('img');
-        handleImagePreview(this, img, preview);
+        handleImagePreview(this, preview);
     });
 
     // Düzenleme görsel önizlemesi
     document.getElementById('editImage').addEventListener('change', function(e) {
         const preview = document.getElementById('editImagePreview');
         const img = preview.querySelector('img');
-        handleImagePreview(this, img, preview);
+        handleSingleImagePreview(this, img, preview);
     });
 }
 
-function handleImagePreview(input, img, preview) {
+function handleImagePreview(input, previewContainer) {
+    previewContainer.innerHTML = '';
+    
+    if (input.files) {
+        Array.from(input.files).forEach((file, index) => {
+            const reader = new FileReader();
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'col-6 position-relative';
+            
+            reader.onload = function(e) {
+                previewDiv.innerHTML = `
+                    <div class="preview-image-container">
+                        <img src="${e.target.result}" alt="Preview ${index + 1}" 
+                             class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover;">
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                                onclick="removeImage(${index}, this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            
+            reader.readAsDataURL(file);
+            previewContainer.appendChild(previewDiv);
+        });
+        
+        previewContainer.style.display = 'flex';
+    }
+}
+
+function removeImage(index, button) {
+    const input = document.getElementById('image');
+    const container = button.closest('.col-6');
+    
+    // FileList'i Array'e çevir ve seçili dosyayı kaldır
+    const dt = new DataTransfer();
+    const files = Array.from(input.files);
+    files.splice(index, 1);
+    files.forEach(file => dt.items.add(file));
+    input.files = dt.files;
+    
+    // Önizleme görselini kaldır
+    container.remove();
+    
+    // Tüm görseller kaldırıldıysa preview container'ı gizle
+    if (input.files.length === 0) {
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+}
+
+function handleSingleImagePreview(input, img, preview) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -432,11 +500,11 @@ function debounce(func, wait) {
 function saveGalleryItem() {
     const form = document.getElementById('galleryForm');
     const formData = new FormData(form);
-
+    
     // Form verilerini kontrol et
     const title = formData.get('title');
     const category = formData.get('category_id');
-    const image = formData.get('image');
+    const images = document.getElementById('image').files;
 
     if (!title) {
         showAlert('Lütfen başlık giriniz.', 'error');
@@ -448,8 +516,8 @@ function saveGalleryItem() {
         return;
     }
 
-    if (!image || image.size === 0) {
-        showAlert('Lütfen bir görsel seçiniz.', 'error');
+    if (images.length === 0) {
+        showAlert('Lütfen en az bir görsel seçiniz.', 'error');
         return;
     }
 
@@ -459,30 +527,51 @@ function saveGalleryItem() {
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
     saveButton.disabled = true;
 
-    fetch('process/save_gallery.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            $('#addGalleryModal').modal('hide');
-            form.reset();
-            document.getElementById('imagePreview').style.display = 'none';
-            loadGallery();
-            showAlert('Görsel başarıyla kaydedildi.', 'success');
-        } else {
-            showAlert(data.message, 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Bir hata oluştu!', 'error');
-    })
-    .finally(() => {
-        // Yükleme bitti
-        saveButton.innerHTML = originalText;
-        saveButton.disabled = false;
+    // Her bir görsel için ayrı bir kayıt oluştur
+    const totalImages = images.length;
+    let processedImages = 0;
+    let successCount = 0;
+
+    Array.from(images).forEach((file, index) => {
+        const singleFormData = new FormData();
+        singleFormData.append('title', title + (totalImages > 1 ? ` (${index + 1}/${totalImages})` : ''));
+        singleFormData.append('description', formData.get('description'));
+        singleFormData.append('category_id', category);
+        singleFormData.append('image', file);
+
+        fetch('process/save_gallery.php', {
+            method: 'POST',
+            body: singleFormData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                successCount++;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            processedImages++;
+            
+            // Tüm görseller işlendiyse
+            if (processedImages === totalImages) {
+                if (successCount > 0) {
+                    $('#addGalleryModal').modal('hide');
+                    form.reset();
+                    document.getElementById('imagePreview').style.display = 'none';
+                    loadGallery();
+                    showAlert(`${successCount} görsel başarıyla yüklendi.`, 'success');
+                } else {
+                    showAlert('Görseller yüklenirken bir hata oluştu.', 'error');
+                }
+                
+                // Yükleme bitti
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+            }
+        });
     });
 }
 
