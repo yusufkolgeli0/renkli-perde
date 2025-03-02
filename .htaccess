@@ -1,0 +1,30 @@
+# Disable directory listing
+Options -Indexes
+
+# Protect against XSS attacks
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(sql|log|ini|json)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect includes directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^includes/ - [F,L]
+</IfModule>
+
+# Enable PHP error logging
+php_flag log_errors on
+php_value error_log logs/error.log 

@@ -1,0 +1,60 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Composer dependencies
+/vendor/
+composer.lock
+
+# Node modules
+/node_modules/
+package-lock.json
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+/logs/*
+
+# Uploaded files/images
+/images/*
+!/images/.gitkeep
+/images/categories/*
+!/images/categories/.gitkeep
+
+# Cache and temporary files
+/cache/*
+/tmp/*
+*.cache
+*.tmp
+
+# Configuration files with sensitive data
+config.php
+
+# Backup files
+*.bak
+*.swp
+*~
+
+# Build files
+/dist/
+/build/
+
+# Test coverage
+/coverage/
+
+# Other
+*.zip
+*.tar
+*.gz
