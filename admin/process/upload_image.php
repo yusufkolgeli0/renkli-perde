@@ -5,40 +5,45 @@ require_once '../../includes/db.php';
 header('Content-Type: application/json');
 
 try {
-    // Check if file was uploaded
+    // Gerekli alanları kontrol et
     if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
         throw new Exception('Dosya yüklenirken bir hata oluştu.');
+    }
+
+    if (!isset($_POST['category_id']) || empty($_POST['category_id'])) {
+        throw new Exception('Kategori seçimi zorunludur.');
     }
 
     $file = $_FILES['image'];
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
-    $category = $_POST['category'] ?? '';
+    $category_id = $_POST['category_id'];
 
-    // Validate inputs
-    if (empty($title)) {
-        throw new Exception('Başlık alanı zorunludur.');
-    }
-
-    // Validate file type
+    // Dosya tipini kontrol et
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!in_array($file['type'], $allowedTypes)) {
         throw new Exception('Sadece JPG, PNG ve GIF formatları desteklenmektedir.');
     }
 
-    // Generate unique filename
+    // Benzersiz dosya adı oluştur
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
     $filename = uniqid() . '.' . $extension;
     $uploadPath = '../../images/' . $filename;
 
-    // Move uploaded file
+    // Dosyayı yükle
     if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
         throw new Exception('Dosya yüklenirken bir hata oluştu.');
     }
 
-    // Save to database
-    $stmt = $db->prepare("INSERT INTO gallery (image, title, description, category, created_at) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->execute([$filename, $title, $description, $category]);
+    // Kategori adını al
+    $stmt = $db->prepare("SELECT name FROM categories WHERE id = ?");
+    $stmt->execute([$category_id]);
+    $category = $stmt->fetch(PDO::FETCH_ASSOC);
+    $categoryName = $category ? $category['name'] : '';
+
+    // Veritabanına kaydet
+    $stmt = $db->prepare("INSERT INTO gallery (image, title, description, category) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$filename, $title, $description, $categoryName]);
 
     echo json_encode([
         'success' => true,
@@ -48,7 +53,7 @@ try {
             'image' => $filename,
             'title' => $title,
             'description' => $description,
-            'category' => $category
+            'category' => $categoryName
         ]
     ]);
 

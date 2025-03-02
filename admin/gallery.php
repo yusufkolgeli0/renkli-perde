@@ -32,9 +32,10 @@
                             <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="category" class="form-label">Kategori</label>
-                            <select id="category" name="category_id" class="form-select" required>
+                            <label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
+                            <select id="category_id" name="category_id" class="form-select" required>
                                 <option value="">Kategori Seçin</option>
+                                <!-- Kategoriler dinamik olarak yüklenecek -->
                             </select>
                         </div>
                     </div>
@@ -181,6 +182,32 @@
         padding: 10px;
     }
 }
+
+.category-name {
+    font-size: 0.9rem;
+    color: #fff;
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.form-select {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+}
 </style>
 
 <script>
@@ -208,8 +235,8 @@ document.getElementById('image').addEventListener('change', function(e) {
 // Initialize the gallery
 document.addEventListener('DOMContentLoaded', function() {
     loadGallery();
+    loadCategories();
     setupImagePreview();
-    loadCategoryOptions();
 });
 
 function loadGallery() {
@@ -235,7 +262,8 @@ function createGalleryItem(item) {
             <img src="../images/${item.image}" alt="${item.title}">
             <div class="gallery-item-overlay">
                 <h3>${item.title}</h3>
-                <p>${item.description}</p>
+                <p>${item.description || ''}</p>
+                <p class="category-name"><strong>Kategori:</strong> ${item.category_name || 'Belirtilmemiş'}</p>
                 <div class="gallery-item-actions">
                     <button class="btn btn-edit" onclick="editItem(${item.id})">
                         <i class="fas fa-edit"></i>
@@ -253,6 +281,13 @@ function setupGalleryActions() {
     // Form submission
     document.getElementById('imageUploadForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Kategori seçimini kontrol et
+        const categoryId = document.getElementById('category_id').value;
+        if (!categoryId) {
+            alert('Lütfen bir kategori seçin');
+            return;
+        }
         
         const formData = new FormData(this);
         
@@ -301,26 +336,28 @@ function deleteItem(id) {
     }
 }
 
-function loadCategoryOptions() {
+function loadCategories() {
     fetch('process/get_categories.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                const select = document.getElementById('category');
+                const select = document.getElementById('category_id');
+                
+                // Mevcut seçili değeri koru
                 const currentValue = select.value;
                 
-                // Clear existing options except the first one
+                // İlk option dışındaki tüm optionları temizle
                 while (select.options.length > 1) {
                     select.remove(1);
                 }
                 
-                // Add new options
+                // Yeni kategorileri ekle
                 data.data.forEach(category => {
                     const option = new Option(category.name, category.id);
                     select.add(option);
                 });
                 
-                // Restore selected value if it exists
+                // Eğer önceden seçili bir değer varsa onu tekrar seç
                 if (currentValue) {
                     select.value = currentValue;
                 }
