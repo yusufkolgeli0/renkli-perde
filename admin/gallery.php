@@ -1,4 +1,29 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html>
 <?php include 'includes/header.php'; ?>
+
+<?php if (isset($_SESSION['success_message'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?php 
+        echo $_SESSION['success_message'];
+        unset($_SESSION['success_message']); 
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error_message'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?php 
+        echo $_SESSION['error_message'];
+        unset($_SESSION['error_message']); 
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
 <div class="gallery-management container-fluid">
     <div class="card shadow-sm">
@@ -11,7 +36,7 @@
 
         <!-- Upload Form -->
         <div id="uploadForm" style="display: none;" class="upload-form">
-            <form action="process/upload_image.php" method="POST" enctype="multipart/form-data" id="imageUploadForm">
+            <form action="process/upload_image.php" method="POST" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
@@ -368,3 +393,4 @@ function loadCategories() {
 </script>
 
 <?php include 'includes/footer.php'; ?> 
+</html> 

@@ -2,8 +2,6 @@
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 
-header('Content-Type: application/json');
-
 try {
     // Gerekli alanları kontrol et
     if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
@@ -45,23 +43,18 @@ try {
     $stmt = $db->prepare("INSERT INTO gallery (image, title, description, category) VALUES (?, ?, ?, ?)");
     $stmt->execute([$filename, $title, $description, $categoryName]);
 
-    echo json_encode([
-        'success' => true,
-        'message' => 'Görsel başarıyla yüklendi.',
-        'data' => [
-            'id' => $db->lastInsertId(),
-            'image' => $filename,
-            'title' => $title,
-            'description' => $description,
-            'category' => $categoryName
-        ]
-    ]);
+    // Session'a başarı mesajı ekle
+    session_start();
+    $_SESSION['success_message'] = 'Görsel başarıyla yüklendi!';
+    
+    // Yönlendirme yap
+    header('Location: ../gallery.php');
+    exit;
 
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    session_start();
+    $_SESSION['error_message'] = $e->getMessage();
+    header('Location: ../gallery.php');
+    exit;
 }
 ?>
