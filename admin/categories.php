@@ -22,6 +22,9 @@
                             <label for="image">Kategori Görseli</label>
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
                             <small class="text-muted">Önerilen boyut: 800x600px</small>
+                            <div id="imagePreview" style="display: none; margin-top: 10px;">
+                                <img src="" alt="Preview" style="max-width: 200px; height: auto;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Kaydet</button>
@@ -159,7 +162,14 @@ function deleteCategory(id) {
 function resetForm() {
     document.getElementById('categoryForm').reset();
     document.getElementById('categoryId').value = '';
-    document.getElementById('imagePreview').style.display = 'none';
+    const imagePreview = document.getElementById('imagePreview');
+    if (imagePreview) {
+        imagePreview.style.display = 'none';
+        const previewImg = imagePreview.querySelector('img');
+        if (previewImg) {
+            previewImg.src = '';
+        }
+    }
 }
 
 // Form submission

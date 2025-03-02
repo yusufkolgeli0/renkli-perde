@@ -2,9 +2,20 @@
 require_once '../../includes/config.php';
 require_once '../../includes/db.php';
 
+function generateSlug($string) {
+    $slug = strtolower(trim($string));
+    $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
+    $slug = preg_replace('/-+/', "-", $slug);
+    $slug = trim($slug, '-');
+    return $slug;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    header('Content-Type: application/json');
     try {
         $name = $_POST['name'];
+        $description = $_POST['description'];
+        $slug = generateSlug($name);
         $image = null;
 
         // Resim yükleme işlemi
@@ -27,16 +38,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $image = $newFilename;
         }
 
-        $stmt = $db->prepare("INSERT INTO categories (name, image) VALUES (?, ?)");
-        $stmt->execute([$name, $image]);
+        if (isset($_POST['id']) && !empty($_POST['id'])) {
+            // Update existing category
+            $stmt = $db->prepare("UPDATE categories SET name = ?, description = ?, slug = ?" . ($image ? ", image = ?" : "") . " WHERE id = ?");
+            $params = [$name, $description, $slug];
+            if ($image) $params[] = $image;
+            $params[] = $_POST['id'];
+            $stmt->execute($params);
+        } else {
+            // Insert new category
+            $stmt = $db->prepare("INSERT INTO categories (name, description, slug, image) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$name, $description, $slug, $image]);
+        }
 
-        $_SESSION['success_message'] = 'Kategori başarıyla eklendi';
-        header('Location: ../categories.php');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Kategori başarıyla kaydedildi'
+        ]);
         exit;
 
     } catch (Exception $e) {
-        $_SESSION['error_message'] = $e->getMessage();
-        header('Location: ../categories.php');
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
         exit;
     }
 }
