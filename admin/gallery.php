@@ -1,8 +1,10 @@
 <?php
-session_start();
 ?>
 <!DOCTYPE html>
 <html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <?php include 'includes/header.php'; ?>
 
 <?php if (isset($_SESSION['success_message'])): ?>
@@ -431,6 +433,32 @@ function saveGalleryItem() {
     const form = document.getElementById('galleryForm');
     const formData = new FormData(form);
 
+    // Form verilerini kontrol et
+    const title = formData.get('title');
+    const category = formData.get('category_id');
+    const image = formData.get('image');
+
+    if (!title) {
+        showAlert('Lütfen başlık giriniz.', 'error');
+        return;
+    }
+
+    if (!category) {
+        showAlert('Lütfen kategori seçiniz.', 'error');
+        return;
+    }
+
+    if (!image || image.size === 0) {
+        showAlert('Lütfen bir görsel seçiniz.', 'error');
+        return;
+    }
+
+    // Yükleme başladı
+    const saveButton = document.querySelector('[onclick="saveGalleryItem()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+    saveButton.disabled = true;
+
     fetch('process/save_gallery.php', {
         method: 'POST',
         body: formData
@@ -450,6 +478,11 @@ function saveGalleryItem() {
     .catch(error => {
         console.error('Error:', error);
         showAlert('Bir hata oluştu!', 'error');
+    })
+    .finally(() => {
+        // Yükleme bitti
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
     });
 }
 
@@ -531,5 +564,7 @@ function showAlert(message, type) {
 }
 </script>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <?php include 'includes/footer.php'; ?> 
 </html> 
