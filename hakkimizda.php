@@ -11,19 +11,15 @@
 <body>
     <?php include 'includes/header.php'; ?>
 
-    
     <section class="about-section">
         <div class="container">
             <div class="about-grid">
                 <div class="about-content">
-                    <h2>Hikayemiz</h2>
-                    <p>2003 yılında küçük bir atölyede başlayan hikayemiz, bugün İstanbul'un en prestijli perde mağazalarından biri olarak devam ediyor. Müşteri memnuniyetini her zaman ön planda tutarak, kaliteli ürün ve hizmet anlayışımızla sektörde öncü olmaya devam ediyoruz.</p>
-                    
-                    <h2>Misyonumuz</h2>
-                    <p>Yaşam alanlarınızı güzelleştirmek ve size özel tasarımlarla evinize değer katmak için çalışıyoruz. Modern teknoloji ve geleneksel el işçiliğini bir araya getirerek, her zevke ve bütçeye uygun çözümler sunuyoruz.</p>
+                    <p>2003 yılından bu yana perde sektörünün farklı alanlarında deneyim kazandık ve 2015 yılında Renkli Perde Tasarım adıyla perakende perde satış mağazamızı kurarak hizmet vermeye başladık. Müşterilerimize en iyi hizmeti sunabilmek için sürekli kendimizi geliştiriyor, vizyonumuzu genişletiyor ve kaliteyi ön planda tutuyoruz.</p>
 
-                    <h2>Vizyonumuz</h2>
-                    <p>Türkiye'nin lider perde tasarım markası olmak ve uluslararası pazarda ülkemizi en iyi şekilde temsil etmek için çalışıyoruz. Sürdürülebilir büyüme ve müşteri memnuniyeti odaklı yaklaşımımızla, sektörde fark yaratmaya devam edeceğiz.</p>
+                    <p>Ev ve ofis perde sistemlerinden, otel ve kurumsal projelere kadar geniş bir yelpazede hizmet veriyoruz. Tül perdelerden mekanik sistemlere kadar her türlü perde çözümünde, sektörde öncü markalarla iş birliği yaparak yaşam alanlarınıza şıklık ve konfor katıyoruz.</p>
+
+                    <p>Renkli Perde Tasarım, 2015 yılında Bünyamin Taran tarafından kurulmuş olup, aynı yıl Ahmet Barış'ın da ekibe katılmasıyla satış ve satış sonrası hizmetlerde tam donanımlı bir yapıya kavuşmuştur. Müşteri memnuniyetini ön planda tutarak, her aşamada güvenilir ve profesyonel hizmet sunmaya devam ediyoruz.</p>
                 </div>
             </div>
         </div>

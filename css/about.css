@@ -24,14 +24,21 @@
 
 .about-grid {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 2fr 4fr;
     gap: 4rem;
     align-items: center;
+}
+
+.about-content {
+    padding-right: 4rem;
+    max-width: 100%;
+    text-align: left;
 }
 
 .about-content h2 {
     color: #fff;
     margin: 2rem 0 1rem;
+    font-size: 2.4rem;
 }
 
 .about-content h2:first-child {
@@ -41,7 +48,10 @@
 .about-content p {
     color: #fff;
     line-height: 1.8;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    max-width: 100%;
+    text-align: left;
 }
 
 .about-image img {
