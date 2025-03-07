@@ -5,12 +5,39 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
     color: #E0E0E0;
-    background-color: #1C1C1C;
-    margin-top: 80px; /* Header yüksekliği kadar margin ekliyoruz */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin-top: 80px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, 
+        rgba(44, 44, 44, 0.4) 0%,
+        rgba(28, 28, 28, 0.6) 50%,
+        rgba(20, 20, 20, 0.8) 100%);
+    z-index: -1;
 }
 
 .container {
@@ -317,7 +344,7 @@ nav ul li a.active {
 /* Features Section */
 .features {
     padding: 5rem 0;
-    background-color: #242424;
+    background-color: rgba(36, 36, 36, 0.8);
 }
 
 .features .container {
@@ -329,16 +356,17 @@ nav ul li a.active {
 .feature-box {
     text-align: center;
     padding: 2rem;
-    background-color: #1C1C1C;
+    background-color: rgba(200, 200, 200, 0.2);
     border-radius: 12px;
     transition: all 0.5s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
 }
 
 .feature-box:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-    background-color: #242424;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    background-color: rgba(220, 220, 220, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -496,25 +524,29 @@ footer {
 /* İletişim Formu */
 .contact-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 3rem;
-    padding: 2rem 0;
+    padding: 4rem 0;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .contact-form form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .contact-form input,
 .contact-form textarea {
-    padding: 1rem;
+    padding: 1.2rem;
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    background-color: #1C1C1C;
+    border-radius: 12px;
+    background-color: rgba(200, 200, 200, 0.2);
     color: #E0E0E0;
     transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    font-size: 1.1rem;
 }
 
 .contact-form input:focus,
@@ -522,34 +554,12 @@ footer {
     border-color: rgba(255,255,255,0.3);
     box-shadow: 0 0 10px rgba(255,255,255,0.1);
     outline: none;
+    background-color: rgba(220, 220, 220, 0.3);
 }
 
 .contact-form textarea {
-    min-height: 150px;
+    min-height: 200px;
     resize: vertical;
-}
-
-.contact-info {
-    padding: 2rem;
-    background-color: #242424;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.contact-info h3 {
-    margin-bottom: 1.5rem;
-}
-
-.contact-info p {
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.contact-info i {
-    color: #808080;
-    font-size: 1.2rem;
 }
 
 /* Responsive Düzenlemeler */
@@ -568,9 +578,5 @@ footer {
 
     .hero-section {
         height: 60vh;
-    }
-
-    .contact-info {
-        margin-top: 2rem;
     }
 } 
