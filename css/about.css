@@ -1,5 +1,25 @@
 .about-section {
     padding: 50px 0;
+    background: url('../images/hero-bg3.jpg') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
+}
+
+.about-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.about-section .container {
+    position: relative;
+    z-index: 1;
 }
 
 .about-grid {
@@ -10,7 +30,7 @@
 }
 
 .about-content h2 {
-    color: #333;
+    color: #fff;
     margin: 2rem 0 1rem;
 }
 
@@ -19,7 +39,7 @@
 }
 
 .about-content p {
-    color: #666;
+    color: #fff;
     line-height: 1.8;
     margin-bottom: 1rem;
 }
