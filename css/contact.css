@@ -2,23 +2,25 @@
     padding: 50px 0;
 }
 
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    margin-bottom: 4rem;
+.contact-info {
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.contact-info h2,
-.contact-form h2 {
+.contact-info h2 {
     margin-bottom: 2rem;
     color: #333;
+    text-align: center;
 }
 
 .info-item {
     display: flex;
     align-items: flex-start;
     margin-bottom: 2rem;
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
 .info-item i {
@@ -36,39 +38,6 @@
 .info-item p {
     color: #666;
     line-height: 1.6;
-}
-
-.contact-form {
-    background: #f9f9f9;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #e74c3c;
 }
 
 .map-section {
@@ -89,16 +58,11 @@
 
 /* Responsive Tasarım */
 @media (max-width: 768px) {
-    .contact-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
     .contact-info {
-        order: 2;
+        padding: 0 20px;
     }
-
-    .contact-form {
-        order: 1;
+    
+    .info-item {
+        padding: 1rem;
     }
 } 

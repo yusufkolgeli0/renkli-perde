@@ -11,73 +11,29 @@
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <div class="page-header">
-        <div class="container">
-            <h1>İletişim</h1>
-            <p>Bizimle iletişime geçin</p>
-        </div>
-    </div>
-
     <section class="contact-section">
         <div class="container">
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <h2>İletişim Bilgileri</h2>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h3>Adres</h3>
-                            <p>Örnek Mahallesi, Örnek Sokak No:123<br>İstanbul, Türkiye</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h3>Telefon</h3>
-                            <p>+90 555 123 4567</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h3>E-posta</h3>
-                            <p>info@renkliperdetasarim.com</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-clock"></i>
-                        <div>
-                            <h3>Çalışma Saatleri</h3>
-                            <p>Pazartesi - Cumartesi: 09:00 - 18:00<br>Pazar: Kapalı</p>
-                        </div>
+            <div class="contact-info">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h3>Adres</h3>
+                        <p>Örnek Mahallesi, Örnek Sokak No:123<br>İstanbul, Türkiye</p>
                     </div>
                 </div>
-
-                <div class="contact-form">
-                    <h2>Mesaj Gönderin</h2>
-                    <form action="process_contact.php" method="POST">
-                        <div class="form-group">
-                            <label for="name">Adınız Soyadınız</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">E-posta Adresiniz</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Telefon Numaranız</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Konu</label>
-                            <input type="text" id="subject" name="subject" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Mesajınız</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn">Mesaj Gönder</button>
-                    </form>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h3>Telefon</h3>
+                        <p>+90 555 123 4567</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h3>E-posta</h3>
+                        <p>info@renkliperdetasarim.com</p>
+                    </div>
                 </div>
             </div>
         </div>
