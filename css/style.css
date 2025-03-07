@@ -48,6 +48,24 @@ header .container {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7af, #6e8efb);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 nav ul {
