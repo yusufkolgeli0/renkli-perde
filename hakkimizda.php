@@ -11,13 +11,7 @@
 <body>
     <?php include 'includes/header.php'; ?>
 
-    <div class="page-header">
-        <div class="container">
-            <h1>Biz Kimiz?</h1>
-            <p>20 yıllık tecrübemizle sizlere hizmet veriyoruz</p>
-        </div>
-    </div>
-
+    
     <section class="about-section">
         <div class="container">
             <div class="about-grid">
