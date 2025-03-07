@@ -10,6 +10,7 @@ body {
     line-height: 1.6;
     color: #E0E0E0;
     background-color: #1C1C1C;
+    margin-top: 80px; /* Header yüksekliği kadar margin ekliyoruz */
 }
 
 .container {
@@ -26,6 +27,8 @@ header {
     width: 100%;
     top: 0;
     z-index: 1000;
+    height: 80px; /* Header yüksekliğini sabitliyoruz */
+    border-bottom: 2px solid #1C1C1C; /* Body ile kesişim için border ekliyoruz */
 }
 
 header .container {
