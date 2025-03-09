@@ -58,3 +58,6 @@ config.php
 *.zip
 *.tar
 *.gz
+
+# Docker
+mysql_data/
