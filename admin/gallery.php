@@ -569,13 +569,13 @@ function handleImagePreview(input, previewContainer) {
         Array.from(input.files).forEach((file, index) => {
             const reader = new FileReader();
             const previewDiv = document.createElement('div');
-            previewDiv.className = 'col-6 position-relative';
+            previewDiv.className = 'col-3 position-relative';
             
             reader.onload = function(e) {
                 previewDiv.innerHTML = `
                     <div class="preview-image-container">
                         <img src="${e.target.result}" alt="Preview ${index + 1}" 
-                             class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover;">
+                             class="img-fluid rounded" style="width: 100%; height: 40px; object-fit: cover;">
                         <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
                                 onclick="removeImage(${index}, this)">
                             <i class="fas fa-times"></i>
@@ -594,7 +594,7 @@ function handleImagePreview(input, previewContainer) {
 
 function removeImage(index, button) {
     const input = document.getElementById('image');
-    const container = button.closest('.col-6');
+    const container = button.closest('.col-3');
     
     // FileList'i Array'e çevir ve seçili dosyayı kaldır
     const dt = new DataTransfer();
