@@ -76,12 +76,8 @@
 
                         <div class="form-group d-grid gap-2">
                             <button type="submit" class="btn btn-primary" id="submitBtn">
-                                <span class="normal-state">
+                                <span class="button-text">
                                     <i class="fas fa-save me-2"></i> Kaydet
-                                </span>
-                                <span class="loading-state d-none">
-                                    <span class="spinner-border spinner-border-sm me-2"></span> 
-                                    Kaydediliyor...
                                 </span>
                             </button>
                             <button type="button" class="btn btn-light" onclick="resetForm()">
@@ -601,6 +597,7 @@ document.getElementById('categoryForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const submitBtn = document.getElementById('submitBtn');
+    const buttonText = submitBtn.querySelector('.button-text');
     const formData = new FormData(this);
     
     // Form validasyonu
@@ -612,8 +609,7 @@ document.getElementById('categoryForm').addEventListener('submit', function(e) {
     
     // Yükleme durumunu göster
     submitBtn.disabled = true;
-    submitBtn.querySelector('.normal-state').classList.add('d-none');
-    submitBtn.querySelector('.loading-state').classList.remove('d-none');
+    buttonText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Kaydediliyor...';
     
     fetch('process/save_category.php', {
         method: 'POST',
@@ -622,11 +618,18 @@ document.getElementById('categoryForm').addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            buttonText.innerHTML = '<i class="fas fa-check me-2"></i> Kaydedildi';
+            
             showAlert('Kategori başarıyla kaydedildi.', 'success');
             if (document.getElementById('autoReset').checked) {
                 resetForm();
             }
             loadCategories();
+            
+            // Reset button state after 2 seconds
+            setTimeout(() => {
+                buttonText.innerHTML = '<i class="fas fa-save me-2"></i> Kaydet';
+            }, 2000);
         } else {
             showAlert(data.message, 'error');
         }
@@ -636,10 +639,10 @@ document.getElementById('categoryForm').addEventListener('submit', function(e) {
         showAlert('Bir hata oluştu!', 'error');
     })
     .finally(() => {
-        // Yükleme durumunu gizle
         submitBtn.disabled = false;
-        submitBtn.querySelector('.normal-state').classList.remove('d-none');
-        submitBtn.querySelector('.loading-state').classList.add('d-none');
+        if (!data.success) {
+            buttonText.innerHTML = '<i class="fas fa-save me-2"></i> Kaydet';
+        }
     });
 });
 
