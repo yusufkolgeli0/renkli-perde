@@ -47,22 +47,6 @@
             <a href="hakkimizda.php" class="btn">Daha Fazla Bilgi</a>
         </div>
     </section>
-    
-    <section class="map-section">
-        <div class="container">
-            <h2>Konum</h2>
-            <div class="map-container">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3008.443928507194!2d28.97206231541454!3d41.03701897929822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab7650656bd63%3A0x8ca058b28c20b6c3!2zVGFrc2ltIE1leWRhbsSxLCBHw7xtw7zFn3N1eXUsIDM0NDM1IEJleW_En2x1L8Swc3RhbmJ1bA!5e0!3m2!1str!2str!4v1647789145619!5m2!1str!2str" 
-                    width="100%" 
-                    height="450" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </div>
-    </section>
 
     <?php include 'includes/footer.php'; ?>
 
