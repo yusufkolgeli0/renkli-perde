@@ -40,7 +40,6 @@ Thumbs.db
 *.tmp
 
 # Configuration files with sensitive data
-config.php
 
 # Backup files
 *.bak
