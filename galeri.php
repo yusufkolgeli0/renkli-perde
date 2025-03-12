@@ -18,12 +18,13 @@ require_once 'includes/db.php';
 
     <div class="container py-5">
         <!-- Başlık ve Açıklama -->
-        <div class="gallery-header text-center mb-5">
-            <h1 class="display-4 fw-bold mb-3">Galeri Kategorileri</h1>
+        <div class="gallery-header text-center">
+            <div style="height: 80px;"></div>
+            <h1 class="display-6 fw-bold">KATEGORİLER</h1>
         </div>
 
         <!-- Kategori Grid -->
-        <div class="category-grid">
+        <div class="category-grid" style="margin-top: 60px;">
             <!-- Tüm Fotoğraflar Kartı -->
             <?php
             // Toplam fotoğraf sayısını al
@@ -77,13 +78,56 @@ require_once 'includes/db.php';
     /* Başlık Stilleri */
     .gallery-header {
         max-width: 800px;
-        margin: 0 auto 4rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        position: relative;
+    }
+
+    @keyframes titleFloat {
+        0%, 100% {
+            transform: translateX(-50%) translateY(0);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        50% {
+            transform: translateX(-50%) translateY(-5px);
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+        }
+    }
+
+    @keyframes lineExpand {
+        0% {
+            transform: translateX(-50%) scaleX(0);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(-50%) scaleX(1);
+            opacity: 1;
+        }
     }
 
     .gallery-header h1 {
-        color: var(--dark-color);
-        position: relative;
+        color: #9ca3af;
+        position: absolute;
         display: inline-block;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.03);
+        margin: 0 auto;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        animation: titleFloat 3s ease-in-out infinite;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
+
+    .gallery-header h1:hover {
+        color: #6b7280;
+        transform: translateX(-50%) scale(1.02);
+        letter-spacing: 3px;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.08);
     }
 
     .gallery-header h1::after {
@@ -91,11 +135,20 @@ require_once 'includes/db.php';
         position: absolute;
         bottom: -10px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) scaleX(0);
         width: 100px;
         height: 4px;
-        background: var(--primary-color);
+        background: #d1d5db;
         border-radius: 2px;
+        animation: lineExpand 1.5s ease forwards;
+        transition: all 0.5s ease;
+    }
+
+    .gallery-header h1:hover::after {
+        background: linear-gradient(90deg, #d1d5db, #9ca3af);
+        width: 140px;
+        box-shadow: 0 2px 10px rgba(156, 163, 175, 0.15);
+        height: 5px;
     }
 
     /* Kategori Grid */
