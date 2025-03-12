@@ -24,7 +24,7 @@ $selected_category = isset($_GET['category']) ? $_GET['category'] : 'all';
             <!-- Kategori Sidebar -->
             <div class="col-md-3">
                 <div class="category-sidebar">
-                    <h4 class="category-title">Kategorilerimiz</h4>
+                    <h4 class="category-title">KATEGORİLER</h4>
                     <div class="category-cards">
                         <a href="kategori-detay.php" class="category-card <?php echo $selected_category == 'all' ? 'active' : ''; ?>">
                             <div class="category-card-image">

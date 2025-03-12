@@ -9,17 +9,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php 
+    include 'includes/header.php';
+    require_once 'includes/config.php';
+    require_once 'includes/db.php';
+
+    // Hakkımızda içeriğini veritabanından al
+    try {
+        $stmt = $db->prepare("SELECT value FROM site_settings WHERE setting_key = 'about_content'");
+        $stmt->execute();
+        $about_content = $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        $about_content = "İçerik yüklenirken bir hata oluştu.";
+    }
+    ?>
 
     <section class="about-section">
         <div class="container">
             <div class="about-grid">
                 <div class="about-content">
-                    <p>2003 yılından bu yana perde sektörünün farklı alanlarında deneyim kazandık ve 2015 yılında Renkli Perde Tasarım adıyla perakende perde satış mağazamızı kurarak hizmet vermeye başladık. Müşterilerimize en iyi hizmeti sunabilmek için sürekli kendimizi geliştiriyor, vizyonumuzu genişletiyor ve kaliteyi ön planda tutuyoruz.</p>
-
-                    <p>Ev ve ofis perde sistemlerinden, otel ve kurumsal projelere kadar geniş bir yelpazede hizmet veriyoruz. Tül perdelerden mekanik sistemlere kadar her türlü perde çözümünde, sektörde öncü markalarla iş birliği yaparak yaşam alanlarınıza şıklık ve konfor katıyoruz.</p>
-
-                    <p>Renkli Perde Tasarım, 2015 yılında Bünyamin Taran tarafından kurulmuş olup, aynı yıl Ahmet Barış'ın da ekibe katılmasıyla satış ve satış sonrası hizmetlerde tam donanımlı bir yapıya kavuşmuştur. Müşteri memnuniyetini ön planda tutarak, her aşamada güvenilir ve profesyonel hizmet sunmaya devam ediyoruz.</p>
+                    <?php echo $about_content; ?>
                 </div>
             </div>
         </div>
