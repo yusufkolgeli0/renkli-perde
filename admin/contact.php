@@ -18,23 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // QR kod resmini güncelle
-        if (isset($_FILES['instagram_qr']) && $_FILES['instagram_qr']['error'] == 0) {
-            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-            $filename = $_FILES['instagram_qr']['name'];
-            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-            if (in_array($ext, $allowed)) {
-                $target_dir = "../images/";
-                $new_filename = "instagram_qr." . $ext;
-                $target_file = $target_dir . $new_filename;
-
-                if (move_uploaded_file($_FILES['instagram_qr']['tmp_name'], $target_file)) {
-                    $stmt->execute([$new_filename, 'instagram_qr']);
-                }
-            }
-        }
-
         $success_message = "İletişim bilgileri başarıyla güncellendi.";
     } catch (PDOException $e) {
         $error_message = "Güncelleme sırasında bir hata oluştu: " . $e->getMessage();
@@ -133,17 +116,12 @@ try {
                                             </span>
                                             <span>Sabit Telefon</span>
                                         </label>
-                                        <div class="input-group input-group-lg">
-                                            <span class="input-group-text border-0 bg-light">
-                                                <i class="fas fa-phone text-primary"></i>
-                                            </span>
-                                            <input type="tel" 
-                                                class="form-control shadow-none" 
-                                                id="phone1" 
-                                                name="phone1" 
-                                                placeholder="0232 XXX XX XX"
-                                                value="<?php echo htmlspecialchars($settings['phone1'] ?? ''); ?>">
-                                        </div>
+                                        <input type="tel" 
+                                            class="form-control form-control-lg shadow-none" 
+                                            id="phone1" 
+                                            name="phone1" 
+                                            placeholder="0232 XXX XX XX"
+                                            value="<?php echo htmlspecialchars($settings['phone1'] ?? ''); ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -154,17 +132,12 @@ try {
                                             </span>
                                             <span>Mobil Telefon</span>
                                         </label>
-                                        <div class="input-group input-group-lg">
-                                            <span class="input-group-text border-0 bg-light">
-                                                <i class="fas fa-mobile-alt text-primary"></i>
-                                            </span>
-                                            <input type="tel" 
-                                                class="form-control shadow-none" 
-                                                id="phone2" 
-                                                name="phone2" 
-                                                placeholder="05XX XXX XX XX"
-                                                value="<?php echo htmlspecialchars($settings['phone2'] ?? ''); ?>">
-                                        </div>
+                                        <input type="tel" 
+                                            class="form-control form-control-lg shadow-none" 
+                                            id="phone2" 
+                                            name="phone2" 
+                                            placeholder="05XX XXX XX XX"
+                                            value="<?php echo htmlspecialchars($settings['phone2'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -177,49 +150,12 @@ try {
                                     </span>
                                     <span>E-posta Adresi</span>
                                 </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text border-0 bg-light">
-                                        <i class="fas fa-envelope text-primary"></i>
-                                    </span>
-                                    <input type="email" 
-                                        class="form-control shadow-none" 
-                                        id="email" 
-                                        name="email" 
-                                        placeholder="ornek@sirketiniz.com"
-                                        value="<?php echo htmlspecialchars($settings['email'] ?? ''); ?>">
-                                </div>
-                            </div>
-
-                            <!-- Instagram QR Kodu -->
-                            <div class="form-group mb-4">
-                                <label for="instagram_qr" class="form-label d-flex align-items-center">
-                                    <span class="icon-circle bg-primary bg-opacity-10 text-primary me-2">
-                                        <i class="fab fa-instagram"></i>
-                                    </span>
-                                    <span>Instagram QR Kodu</span>
-                                </label>
-                                <div class="qr-upload-area">
-                                    <div class="custom-file-upload">
-                                        <input type="file" 
-                                            class="form-control form-control-lg shadow-none" 
-                                            id="instagram_qr" 
-                                            name="instagram_qr" 
-                                            accept="image/*">
-                                        <label for="instagram_qr" class="file-label">
-                                            <i class="fas fa-cloud-upload-alt me-2"></i>
-                                            QR Kod Yükle
-                                        </label>
-                                    </div>
-                                    
-                                    <?php if (!empty($settings['instagram_qr'])): ?>
-                                        <div class="mt-3 text-center p-3 bg-light rounded">
-                                            <img src="../images/<?php echo htmlspecialchars($settings['instagram_qr']); ?>" 
-                                                alt="Instagram QR Kod" 
-                                                class="img-thumbnail qr-preview"
-                                                style="max-height: 200px;">
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                                <input type="email" 
+                                    class="form-control form-control-lg shadow-none" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="ornek@sirketiniz.com"
+                                    value="<?php echo htmlspecialchars($settings['email'] ?? ''); ?>">
                             </div>
                         </div>
                     </div>
@@ -569,29 +505,6 @@ try {
 // Harita önizlemeyi güncelle
 document.getElementById('map_embed').addEventListener('input', function() {
     document.getElementById('mapPreview').innerHTML = this.value;
-});
-
-// Dosya yükleme önizlemesi
-document.getElementById('instagram_qr').addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.querySelector('.qr-preview');
-            if (!preview) {
-                const newPreview = document.createElement('div');
-                newPreview.className = 'mt-3 text-center p-3 bg-light rounded';
-                newPreview.innerHTML = `
-                    <img src="${e.target.result}" 
-                        alt="Instagram QR Kod" 
-                        class="img-thumbnail qr-preview"
-                        style="max-height: 200px;">`;
-                document.querySelector('.qr-upload-area').appendChild(newPreview);
-            } else {
-                preview.src = e.target.result;
-            }
-        }
-        reader.readAsDataURL(e.target.files[0]);
-    }
 });
 </script>
 
