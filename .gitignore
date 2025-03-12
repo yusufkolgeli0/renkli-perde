@@ -32,6 +32,7 @@ Thumbs.db
 !/images/.gitkeep
 /images/categories/*
 !/images/categories/.gitkeep
+!images/qr-code.png
 
 # Cache and temporary files
 /cache/*
