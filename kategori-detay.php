@@ -261,7 +261,6 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
 
     /* Hero Section */
     .hero-section {
-        background: linear-gradient(135deg, var(--primary-color), #6e8efb);
         color: var(--light-color);
         padding: 4rem 0;
         margin-bottom: 3rem;

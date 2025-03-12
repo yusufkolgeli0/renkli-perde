@@ -20,7 +20,6 @@ require_once 'includes/db.php';
         <!-- Başlık ve Açıklama -->
         <div class="gallery-header text-center mb-5">
             <h1 class="display-4 fw-bold mb-3">Galeri Kategorileri</h1>
-            <p class="lead text-muted">Perde tasarımlarımızı kategorilere göre keşfedin</p>
         </div>
 
         <!-- Kategori Grid -->
@@ -31,20 +30,6 @@ require_once 'includes/db.php';
             $stmt = $db->query("SELECT COUNT(*) as total FROM gallery");
             $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             ?>
-            <a href="kategori-detay.php?all=1" class="category-card featured-card">
-                <div class="category-card-image">
-                    <div class="category-card-bg" style="background-image: linear-gradient(45deg, #6e8efb, #4a90e2);">
-                        <div class="featured-content">
-                            <i class="fas fa-images featured-icon"></i>
-                            <h2 class="featured-title">Tüm Fotoğraflar</h2>
-                            <span class="featured-count"><?php echo $total; ?> görsel</span>
-                            <span class="featured-button">
-                                Hepsini Görüntüle <i class="fas fa-arrow-right"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </a>
 
             <?php
             $stmt = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery WHERE category_id = c.id) as image_count FROM categories c ORDER BY name");
@@ -125,7 +110,6 @@ require_once 'includes/db.php';
     .featured-card {
         grid-column: 1 / -1;
         max-width: 100%;
-        background: linear-gradient(45deg, #6e8efb, #4a90e2);
         color: var(--light-color);
     }
 
