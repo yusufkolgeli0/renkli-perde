@@ -19,7 +19,7 @@
             <div class="footer-section">
                 <h3>Sosyal Medya</h3>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/renkliperdetasarim?igsh=MWZvNnFkZjEyd2Zveg%3D%3D&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
