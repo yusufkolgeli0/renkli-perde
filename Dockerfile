@@ -19,9 +19,18 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . /var/www/html/
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+# Create uploads directory and set permissions
+RUN mkdir -p /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/uploads
+
+# Configure PHP to use environment variables
+RUN echo "env[DB_HOST] = \$DB_HOST" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "env[DB_DATABASE] = \$DB_DATABASE" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "env[DB_USER] = \$DB_USER" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "env[DB_PASSWORD] = \$DB_PASSWORD" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "env[TZ] = \$TZ" >> /usr/local/etc/php-fpm.d/www.conf
 
 EXPOSE 9000
 

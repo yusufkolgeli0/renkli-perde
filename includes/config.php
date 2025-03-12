@@ -1,9 +1,9 @@
 <?php
 // Veritabanı bağlantı bilgileri
-define('DB_HOST', 'localhost');     // Veritabanı sunucusu
-define('DB_NAME', 'renkli_perde'); // Veritabanı adı
-define('DB_USER', 'root');         // Veritabanı kullanıcı adı - Kendi kullanıcı adınızla değiştirin
-define('DB_PASS', '12345678');             // Veritabanı şifresi - Kendi şifrenizle değiştirin
+define('DB_HOST', 'db');
+define('DB_NAME', 'renkli_perde_db');
+define('DB_USER', 'root');
+define('DB_PASS', 'root_password'); // MAMP için varsayılan şifre
 
 // Error reporting
 error_reporting(E_ALL);
