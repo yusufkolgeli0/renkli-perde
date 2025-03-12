@@ -149,13 +149,7 @@
             <div class="card">
                 <div class="card-body p-3">
                     <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label text-muted"><i class="fas fa-filter me-2"></i>Kategori Filtresi</label>
-                            <select class="form-select" id="categoryFilter">
-                                <option value="">Tüm Kategoriler</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-8">
                             <label class="form-label text-muted"><i class="fas fa-search me-2"></i>Arama</label>
                             <input type="text" class="form-control" id="searchFilter" placeholder="Başlık veya açıklama ara...">
                         </div>
@@ -173,9 +167,30 @@
         </div>
     </div>
 
-    <!-- Galeri Grid -->
-    <div class="row g-4" id="galleryGrid">
-        <!-- Görseller JavaScript ile doldurulacak -->
+    <!-- Kategori Tabları -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body p-3">
+                    <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab">
+                                Tüm Görseller
+                            </button>
+                        </li>
+                        <!-- Kategori tabları JavaScript ile doldurulacak -->
+                    </ul>
+                    <div class="tab-content mt-4" id="categoryTabContent">
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
+                            <div class="row gallery-masonry g-4" id="galleryGrid">
+                                <!-- Görseller JavaScript ile doldurulacak -->
+                            </div>
+                        </div>
+                        <!-- Kategori içerikleri JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -279,107 +294,85 @@
 </div>
 
 <style>
-.gallery-card {
-    position: relative;
-    margin-bottom: 30px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
+.gallery-masonry {
+    columns: 8 140px;
+    column-gap: 0.75rem;
+    padding: 0.75rem;
+    margin: 0 auto;
+    max-width: 1800px;
 }
 
-.gallery-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-.gallery-card img {
+.gallery-item {
+    break-inside: avoid;
+    margin-bottom: 0.75rem;
+    display: inline-block;
     width: 100%;
-    height: 250px;
-    object-fit: cover;
+    max-width: 200px;
 }
 
-.gallery-card-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    padding: 20px;
-    color: white;
-}
-
-.gallery-card-title {
-    font-size: 1.2rem;
-    margin: 0;
-    font-weight: 600;
-}
-
-.gallery-card-category {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin: 5px 0;
-}
-
-.gallery-card-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 5px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.gallery-card:hover .gallery-card-actions {
-    opacity: 1;
-}
-
-.gallery-card-actions button {
-    padding: 8px;
-    border-radius: 50%;
+.gallery-item .card {
     border: none;
-    width: 35px;
-    height: 35px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+    background: #fff;
+}
+
+.gallery-item .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.gallery-item .card-img-top {
+    aspect-ratio: 1;
+    height: 140px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.gallery-item .card-body {
+    padding: 0.5rem;
+}
+
+.gallery-item .card-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.gallery-item .card-text {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+.gallery-item .btn-icon-only {
+    width: 28px;
+    height: 28px;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.9);
-    color: #333;
-    cursor: pointer;
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.9);
+    opacity: 0;
     transition: all 0.3s ease;
-}
-
-.gallery-card-actions button:hover {
-    background: white;
-    transform: scale(1.1);
-}
-
-.gallery-card-actions .edit-btn:hover {
-    color: #2196F3;
-}
-
-.gallery-card-actions .delete-btn:hover {
-    color: #F44336;
-}
-
-#imagePreview img, #editImagePreview img {
-    max-height: 300px;
-    width: auto;
 }
 
 .empty-gallery-message {
     text-align: center;
-    padding: 40px;
-    background: #f8f9fa;
+    padding: 3rem;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
     border-radius: 12px;
-    margin: 20px 0;
+    margin: 1rem;
 }
 
 .empty-gallery-message i {
     font-size: 3rem;
-    color: #dee2e6;
-    margin-bottom: 15px;
+    color: #4e73df;
+    margin-bottom: 1rem;
 }
 
 .empty-gallery-message p {
@@ -388,153 +381,107 @@
     margin: 0;
 }
 
-.preview-image-container {
-    position: relative;
-    margin-bottom: 10px;
-}
-
-.preview-image-container img {
-    border: 2px solid #dee2e6;
-}
-
-.preview-image-container .btn-danger {
-    padding: 2px 6px;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-.preview-image-container .btn-danger:hover {
-    opacity: 1;
-}
-
-.card {
+/* Tab stilleri */
+.nav-tabs {
     border: none;
-    box-shadow: 0 0 15px rgba(0,0,0,.1);
-    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 5px;
 }
 
-.card:hover {
-    box-shadow: 0 0 20px rgba(0,0,0,.15);
+.nav-tabs::-webkit-scrollbar {
+    display: none;
 }
 
-.icon-shape {
-    width: 48px;
-    height: 48px;
-    background-position: center;
-    border-radius: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.nav-tabs .nav-item {
+    margin: 0 0.25rem;
+    white-space: nowrap;
 }
 
-.bg-gradient-primary {
-    background: linear-gradient(45deg, #4e73df, #224abe);
-}
-
-.bg-gradient-success {
-    background: linear-gradient(45deg, #1cc88a, #13855c);
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(45deg, #f6c23e, #dda20a);
-}
-
-.bg-gradient-info {
-    background: linear-gradient(45deg, #36b9cc, #258391);
-}
-
-.icon-shape i {
-    color: white;
-}
-
-.form-select, .form-control {
-    border: 1px solid #e2e8f0;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-}
-
-.form-select:focus, .form-control:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 0 0.2rem rgba(78,115,223,.25);
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, #4e73df, #224abe);
+.nav-tabs .nav-link {
     border: none;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(45deg, #224abe, #1a3a97);
-    transform: translateY(-2px);
-}
-
-.gallery-card {
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,.1);
-}
-
-.gallery-card img {
-    border-radius: 1rem 1rem 0 0;
-}
-
-.gallery-card-overlay {
-    border-radius: 0 0 1rem 1rem;
-}
-
-.gallery-card-actions button {
-    width: 40px;
-    height: 40px;
-    backdrop-filter: blur(5px);
-}
-
-.empty-gallery-message {
-    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-    border-radius: 1rem;
-    padding: 3rem;
-}
-
-.empty-gallery-message i {
-    font-size: 4rem;
-    color: #4e73df;
-    margin-bottom: 1.5rem;
-}
-
-#imagePreview {
-    gap: 1rem;
-}
-
-.preview-image-container {
-    border-radius: 0.75rem;
-    overflow: hidden;
-}
-
-.modal-content {
-    border: none;
-    border-radius: 1rem;
-}
-
-.modal-header {
-    background: linear-gradient(45deg, #4e73df, #224abe);
-    color: white;
-    border-radius: 1rem 1rem 0 0;
-}
-
-.modal-header .btn-close {
-    color: white;
-}
-
-.form-label {
+    background: #f8f9fa;
+    color: #6c757d;
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
 }
 
-.text-muted {
-    color: #6c757d !important;
+.nav-tabs .nav-link:hover {
+    background: #e9ecef;
+    color: #4e73df;
+}
+
+.nav-tabs .nav-link.active {
+    background: #4e73df;
+    color: white;
+}
+
+.category-count {
+    background: rgba(0,0,0,0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* Responsive düzenlemeler */
+@media (min-width: 1600px) {
+    .gallery-masonry {
+        columns: 10 140px;
+    }
+}
+
+@media (max-width: 1599px) {
+    .gallery-masonry {
+        columns: 8 140px;
+    }
+}
+
+@media (max-width: 1399px) {
+    .gallery-masonry {
+        columns: 7 140px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .gallery-masonry {
+        columns: 6 140px;
+    }
+}
+
+@media (max-width: 991px) {
+    .gallery-masonry {
+        columns: 5 140px;
+    }
+}
+
+@media (max-width: 767px) {
+    .gallery-masonry {
+        columns: 4 140px;
+    }
+    
+    .gallery-item .card-img-top {
+        height: 140px;
+    }
+}
+
+@media (max-width: 575px) {
+    .gallery-masonry {
+        columns: 3 140px;
+    }
+    
+    .gallery-item .card-img-top {
+        height: 140px;
+    }
+    
+    .gallery-item .card-body {
+        padding: 0.5rem;
+    }
 }
 </style>
 
@@ -630,6 +577,8 @@ function loadCategories() {
             if (data.success) {
                 const categories = data.data;
                 updateCategorySelects(categories);
+                updateCategoryTabs(categories);
+                loadGalleryByCategories(categories);
             }
         })
         .catch(error => console.error('Error:', error));
@@ -650,32 +599,88 @@ function updateCategorySelects(categories) {
     });
 }
 
-function loadGallery() {
-    const categoryId = document.getElementById('categoryFilter').value;
-    const search = document.getElementById('searchFilter').value;
-    const sort = document.getElementById('sortFilter').value;
+function updateCategoryTabs(categories) {
+    const tabList = document.getElementById('categoryTabs');
+    const tabContent = document.getElementById('categoryTabContent');
+    
+    // Tüm Görseller tab'ını güncelle
+    const allTab = tabList.querySelector('#all-tab');
+    if (allTab) {
+        allTab.innerHTML = `
+            Tüm Görseller
+            <span class="category-count">(0)</span>
+        `;
+    }
+    
+    // Mevcut kategori tablarını temizle (Tüm Görseller hariç)
+    Array.from(tabList.children).forEach(tab => {
+        if (tab.querySelector('button').id !== 'all-tab') {
+            tab.remove();
+        }
+    });
+    
+    // Kategori tablarını oluştur
+    categories.forEach(category => {
+        // Tab butonunu oluştur
+        const tabButton = document.createElement('li');
+        tabButton.className = 'nav-item';
+        tabButton.role = 'presentation';
+        tabButton.innerHTML = `
+            <button class="nav-link" id="cat-${category.id}-tab" data-bs-toggle="tab" 
+                    data-bs-target="#cat-${category.id}" type="button" role="tab">
+                ${category.name}
+                <span class="category-count">(0)</span>
+            </button>
+        `;
+        tabList.appendChild(tabButton);
+        
+        // Tab içeriğini oluştur
+        const tabPane = document.createElement('div');
+        tabPane.className = 'tab-pane fade';
+        tabPane.id = `cat-${category.id}`;
+        tabPane.role = 'tabpanel';
+        tabPane.innerHTML = `
+            <div class="row gallery-masonry g-4" id="gallery-cat-${category.id}"></div>
+        `;
+        tabContent.appendChild(tabPane);
+    });
+}
 
-    fetch(`process/get_gallery.php?category=${categoryId}&search=${search}&sort=${sort}`)
+function loadGalleryByCategories(categories) {
+    // Tüm görselleri yükle
+    fetch('process/get_gallery.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                displayGallery(data.data);
+                const items = data.data;
+                
+                // Tüm görselleri ana grid'e ekle
+                displayGalleryItems('galleryGrid', items);
+                document.querySelector('#all-tab .category-count').textContent = `(${items.length})`;
+                
+                // Kategorilere göre görselleri dağıt
+                categories.forEach(category => {
+                    const categoryItems = items.filter(item => item.category_id === category.id);
+                    displayGalleryItems(`gallery-cat-${category.id}`, categoryItems);
+                    document.querySelector(`#cat-${category.id}-tab .category-count`).textContent = 
+                        `(${categoryItems.length})`;
+                });
             }
         })
         .catch(error => console.error('Error:', error));
 }
 
-function displayGallery(items) {
-    const container = document.getElementById('galleryGrid');
+function displayGalleryItems(containerId, items) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
     container.innerHTML = '';
 
     if (items.length === 0) {
         container.innerHTML = `
-            <div class="col-12">
-                <div class="empty-gallery-message">
-                    <i class="fas fa-images"></i>
-                    <p>Henüz görsel eklenmemiş.</p>
-                </div>
+            <div class="empty-gallery-message">
+                <i class="fas fa-images"></i>
+                <p>Bu kategoride henüz görsel bulunmuyor.</p>
             </div>
         `;
         return;
@@ -683,20 +688,26 @@ function displayGallery(items) {
 
     items.forEach(item => {
         container.innerHTML += `
-            <div class="col-md-4 col-lg-3">
-                <div class="gallery-card">
-                    <img src="../images/${item.image}" alt="${item.title}">
-                    <div class="gallery-card-overlay">
-                        <h3 class="gallery-card-title">${item.title}</h3>
-                        <div class="gallery-card-category">${item.category_name || 'Kategorisiz'}</div>
+            <div class="gallery-item">
+                <div class="card">
+                    <div class="position-relative">
+                        <img src="../images/${item.image}" class="card-img-top" alt="${item.title}"
+                             loading="lazy" onerror="this.src='assets/img/placeholder.jpg'">
+                        <div class="position-absolute top-0 end-0 p-2">
+                            <button class="btn btn-icon-only btn-light btn-sm rounded-circle shadow-sm me-1" 
+                                    onclick="editGalleryItem(${item.id})" title="Düzenle">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-icon-only btn-light btn-sm rounded-circle shadow-sm" 
+                                    onclick="deleteGalleryItem(${item.id})" title="Sil">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="gallery-card-actions">
-                        <button class="edit-btn" onclick="editGalleryItem(${item.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="delete-btn" onclick="deleteGalleryItem(${item.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate mb-1" title="${item.title}">${item.title}</h5>
+                        <p class="text-muted small mb-2">${item.category_name || 'Kategorisiz'}</p>
+                        ${item.description ? `<p class="card-text small text-truncate" title="${item.description}">${item.description}</p>` : ''}
                     </div>
                 </div>
             </div>
@@ -704,25 +715,45 @@ function displayGallery(items) {
     });
 }
 
+// Filtre fonksiyonlarını güncelle
 function setupFilters() {
-    const filters = ['categoryFilter', 'searchFilter', 'sortFilter'];
-    filters.forEach(filterId => {
-        document.getElementById(filterId).addEventListener('change', loadGallery);
+    document.getElementById('searchFilter').addEventListener('keyup', debounce(() => {
+        const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+        const sortValue = document.getElementById('sortFilter').value;
+        
+        fetch(`process/get_gallery.php?search=${searchTerm}&sort=${sortValue}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Aktif tab'ı bul
+                    const activeTab = document.querySelector('.nav-link.active');
+                    const activeTabId = activeTab.getAttribute('data-bs-target').replace('#', '');
+                    
+                    if (activeTabId === 'all') {
+                        displayGalleryItems('galleryGrid', data.data);
+                    } else {
+                        const categoryId = activeTabId.replace('cat-', '');
+                        const filteredItems = data.data.filter(item => 
+                            item.category_id === parseInt(categoryId)
+                        );
+                        displayGalleryItems(`gallery-${activeTabId}`, filteredItems);
+                    }
+                }
+            });
+    }, 300));
+
+    document.getElementById('sortFilter').addEventListener('change', () => {
+        const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+        const sortValue = document.getElementById('sortFilter').value;
+        
+        fetch(`process/get_gallery.php?search=${searchTerm}&sort=${sortValue}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadGalleryByCategories(data.categories || []);
+                }
+            });
     });
-
-    document.getElementById('searchFilter').addEventListener('keyup', debounce(loadGallery, 300));
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
 
 function saveGalleryItem() {
