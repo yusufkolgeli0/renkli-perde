@@ -14,5 +14,4 @@ try {
     );
 } catch (PDOException $e) {
     die("Veritabanı bağlantısı başarısız: " . $e->getMessage());
-}
-?> 
+} 

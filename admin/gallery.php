@@ -1,13 +1,8 @@
 <?php
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<?php include 'includes/header.php'; ?>
+include 'includes/header.php';
 
-<?php if (isset($_SESSION['success_message'])): ?>
+
+if (isset($_SESSION['success_message'])): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <?php 
         echo $_SESSION['success_message'];
@@ -27,6 +22,9 @@
     </div>
 <?php endif; ?>
 
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <div class="container-fluid py-4">
     <!-- İstatistik Kartları -->
     <div class="row mb-4">
@@ -823,6 +821,8 @@ function saveGalleryItem() {
                     loadGallery();
                     showAlert(`${successCount} görsel başarıyla yüklendi.`, 'success');
                 } else {
+                    console.log('Görseller yüklenirken bir hata oluştu.');
+                    console.log(data);
                     showAlert('Görseller yüklenirken bir hata oluştu.', 'error');
                 }
                 
