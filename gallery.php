@@ -203,12 +203,27 @@ function loadGallery() {
 }
 
 function createGalleryItem(item) {
+    console.log('Item:', item); // Debug için
+    
+    let imagePath;
+    if (item.image_missing) {
+        imagePath = 'images/no-image.jpg';
+    } else {
+        imagePath = item.image.startsWith('category_') ? 
+            `images/categories/${item.image}` : 
+            `images/${item.image}`;
+    }
+    
     return `
         <div class="gallery-item">
-            <img src="images/${item.image}" alt="${item.title}">
+            <img src="${imagePath}" 
+                 alt="${item.title}"
+                 loading="lazy"
+                 onerror="this.src='images/no-image.jpg'">
             <div class="gallery-item-overlay">
-                <h3>${item.title}</h3>
-                <p>${item.description || ''}</p>
+                <h3>${item.title || ''}</h3>
+                ${item.description ? `<p>${item.description}</p>` : ''}
+                ${item.category_name ? `<small class="text-muted">${item.category_name}</small>` : ''}
             </div>
         </div>
     `;

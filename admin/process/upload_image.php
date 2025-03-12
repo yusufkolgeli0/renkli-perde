@@ -40,8 +40,8 @@ try {
     $categoryName = $category ? $category['name'] : '';
 
     // Veritabanına kaydet
-    $stmt = $db->prepare("INSERT INTO gallery (image, title, description, category) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$filename, $title, $description, $categoryName]);
+    $stmt = $db->prepare("INSERT INTO gallery (image, title, description, category_id) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$filename, $title, $description, $category_id]);
 
     // Session'a başarı mesajı ekle
     session_start();
