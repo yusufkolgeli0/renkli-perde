@@ -14,7 +14,5 @@ INSERT INTO contact_settings (setting_key, value) VALUES
 ('phone2', '0533 491 69 99'),
 ('email', 'renkliperde@gmail.com'),
 ('map_embed', '<iframe src="GOOGLE_MAP_EMBED_URL" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'),
-('instagram_qr', 'instagram_qr.png'),
-('map_lat', '38.4237'),
-('map_lng', '27.1428')
+('instagram_qr', 'instagram_qr.png')
 ON DUPLICATE KEY UPDATE value = VALUES(value);
