@@ -43,7 +43,7 @@ body::before {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0;
 }
 
 /* Header Stili */
@@ -54,20 +54,48 @@ header {
     width: 100%;
     top: 0;
     z-index: 1000;
-    height: 80px; /* Header yüksekliğini sabitliyoruz */
-    border-bottom: 2px solid #1C1C1C; /* Body ile kesişim için border ekliyoruz */
+    height: 80px;
+    border-bottom: 2px solid #1C1C1C;
 }
 
 header .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 1rem 20px;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.logo {
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    flex-shrink: 0;
 }
 
 .logo a {
     text-decoration: none;
-    color: #E0E0E0;
+    color: transparent;
+    display: block;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.logo img {
+    height: 80px;
+    width: 100%;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2) contrast(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
 }
 
 .logo h1 {
@@ -93,6 +121,11 @@ header .container {
     100% {
         background-position: 0% 50%;
     }
+}
+
+nav {
+    margin-left: auto;
+    padding-right: 20px;
 }
 
 nav ul {

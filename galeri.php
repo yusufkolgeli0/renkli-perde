@@ -20,7 +20,7 @@ require_once 'includes/db.php';
         <!-- Başlık ve Açıklama -->
         <div class="gallery-header text-center">
             <div style="height: 80px;"></div>
-            <h1 class="display-6 fw-bold">KATEGORİLER</h1>
+            <h1 class="h2 fw-bold">KATEGORİLER</h1>
         </div>
 
         <!-- Kategori Grid -->
@@ -114,7 +114,7 @@ require_once 'includes/db.php';
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 2rem;
+        font-size: 1.75rem;
         animation: titleFloat 3s ease-in-out infinite;
         letter-spacing: 2px;
         transition: all 0.3s ease;

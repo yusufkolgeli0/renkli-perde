@@ -5,7 +5,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="container">
         <div class="logo">
             <a href="index.php">
-                <h1>Renkli Perde Tasarım</h1>
+                <img src="images/logo.png" alt="Renkli Perde Tasarım Logo">
             </a>
         </div>
         <nav>
