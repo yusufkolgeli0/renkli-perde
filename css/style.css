@@ -72,6 +72,8 @@ header .container {
     padding: 0;
     width: 200px;
     flex-shrink: 0;
+    display: block;
+    margin-right: auto;
 }
 
 .logo a {
