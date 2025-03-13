@@ -30,7 +30,6 @@ if(!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true
                     <li><a href="gallery.php"><i class="fas fa-images"></i> Galeri Yönetimi</a></li>
                     <li><a href="about.php"><i class="fas fa-info-circle"></i> Hakkımızda Yönetimi</a></li>
                     <li><a href="contact.php"><i class="fas fa-envelope"></i> İletişim Yönetimi</a></li>
-                    <li><a href="settings.php"><i class="fas fa-cog"></i> Site Ayarları</a></li>
                     <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>
                 </ul>
             </nav>
