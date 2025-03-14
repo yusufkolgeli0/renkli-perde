@@ -1,6 +1,9 @@
 # Disable directory listing
 Options -Indexes
 
+# Set default file
+DirectoryIndex index.html index.php
+
 # Protect against XSS attacks
 <IfModule mod_headers.c>
     Header set X-XSS-Protection "1; mode=block"

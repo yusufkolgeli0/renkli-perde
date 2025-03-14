@@ -824,4 +824,163 @@ footer {
     .hero-section {
         height: 60vh;
     }
+}
+
+/* Mobil Menü */
+.menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-top: 60px;
+    }
+
+    header {
+        height: 60px;
+    }
+
+    .logo {
+        width: 130px;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    .menu-toggle {
+        display: block;
+        margin-left: auto;
+        padding: 10px;
+    }
+
+    nav {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    nav.active {
+        display: block;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav ul li {
+        margin: 0;
+    }
+
+    nav ul li a {
+        padding: 10px 0;
+        font-size: 1.1rem;
+    }
+
+    .hero-section {
+        height: 100vh;
+        min-height: 500px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-content .btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+
+    .features {
+        padding: 40px 0;
+    }
+
+    .feature-box {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .feature-box i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .feature-box h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .feature-box p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin-top: 50px;
+    }
+
+    header {
+        height: 50px;
+    }
+
+    .logo {
+        width: 110px;
+    }
+
+    .logo img {
+        height: 40px;
+    }
+
+    .hero-section {
+        min-height: 400px;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .hero-content .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .features {
+        padding: 30px 0;
+    }
+
+    .feature-box {
+        padding: 15px;
+    }
+
+    .feature-box i {
+        font-size: 1.8rem;
+    }
+
+    .feature-box h3 {
+        font-size: 1.1rem;
+    }
+
+    .feature-box p {
+        font-size: 0.85rem;
+    }
 } 
