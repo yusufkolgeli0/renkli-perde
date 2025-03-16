@@ -27,7 +27,7 @@ if(!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true
                 <ul>
                     <li><a href="dashboard.php"><i class="fas fa-home"></i> Ana Sayfa</a></li>
                     <li><a href="categories.php"><i class="fas fa-tags"></i> Kategoriler</a></li>
-                    <li><a href="galeri.php"><i class="fas fa-images"></i> Galeri Yönetimi</a></li>
+                    <li><a href="gallery.php"><i class="fas fa-images"></i> Galeri Yönetimi</a></li>
                     <li><a href="about.php"><i class="fas fa-info-circle"></i> Hakkımızda Yönetimi</a></li>
                     <li><a href="contact.php"><i class="fas fa-envelope"></i> İletişim Yönetimi</a></li>
                     <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a></li>

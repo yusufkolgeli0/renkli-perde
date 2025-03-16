@@ -58,3 +58,5 @@ Thumbs.db
 
 # Docker
 mysql_data/
+
+*/config.php
