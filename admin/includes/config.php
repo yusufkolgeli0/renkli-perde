@@ -4,10 +4,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Veritabanı bağlantı bilgileri
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'renkli_perde');
+define('DB_HOST', 'db');
+define('DB_NAME', 'renkli_perde_db');
 define('DB_USER', 'root');
-define('DB_PASS', '12345678'); 
+define('DB_PASS', 'root_password'); // MAMP için varsayılan şifre
 
 try {
     $db = new PDO(

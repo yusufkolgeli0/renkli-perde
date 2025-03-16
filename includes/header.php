@@ -28,6 +28,19 @@ $base_url = '/';  // Base URL'i tanımla
                 <img src="/assets/images/logo.png" alt="Renkli Perde Tasarım Logo">
             </a>
         </div>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+            <form id="searchForm" action="galeri.php" method="get">
+                <div class="search-box">
+                    <input type="text" id="searchInput" name="search" placeholder="Galeri'de ara..." autocomplete="off">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
         <div class="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
@@ -37,7 +50,36 @@ $base_url = '/';  // Base URL'i tanımla
                 <li><a href="galeri.php" <?php echo ($current_page == 'galeri.php') ? 'class="active"' : ''; ?>><i class="fas fa-images"></i> Galeri</a></li>
                 <li><a href="hakkimizda.php" <?php echo ($current_page == 'hakkimizda.php') ? 'class="active"' : ''; ?>><i class="fas fa-info-circle"></i> Biz Kimiz</a></li>
                 <li><a href="iletisim.php" <?php echo ($current_page == 'iletisim.php') ? 'class="active"' : ''; ?>><i class="fas fa-envelope"></i> İletişim</a></li>
+                <li class="search-toggle-mobile"><a href="#"><i class="fas fa-search"></i> Ara</a></li>
             </ul>
         </nav>
     </div>
 </header> 
+
+<script>
+    // Mobile search toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchToggle = document.querySelector('.search-toggle-mobile');
+        const searchContainer = document.querySelector('.search-container');
+        
+        if (searchToggle && searchContainer) {
+            searchToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchContainer.classList.toggle('active');
+                if (searchContainer.classList.contains('active')) {
+                    document.getElementById('searchInput').focus();
+                }
+            });
+        }
+        
+        // Set search input value from URL parameter if exists
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = searchParam;
+            }
+        }
+    });
+</script> 

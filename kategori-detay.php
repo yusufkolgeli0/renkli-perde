@@ -5,6 +5,9 @@ require_once 'includes/db.php';
 // Kategori ID'sini al
 $category_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Search parameter
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Kategori bilgilerini al
 $category = null;
 if ($category_id > 0) {
@@ -20,24 +23,51 @@ if (!$category && $category_id !== 0) {
 }
 
 // Galeri sorgusunu oluştur
-if ($category_id > 0) {
-    $query = "SELECT g.*, c.name as category_name 
-             FROM gallery g 
-             LEFT JOIN categories c ON g.category_id = c.id 
-             WHERE g.category_id = ?
-             ORDER BY g.created_at DESC";
-    $stmt = $db->prepare($query);
-    $stmt->execute([$category_id]);
+if (!empty($search)) {
+    // Search query
+    if ($category_id > 0) {
+        $query = "SELECT g.*, c.name as category_name 
+                 FROM gallery g 
+                 LEFT JOIN categories c ON g.category_id = c.id 
+                 WHERE g.category_id = ? AND (g.title LIKE ? OR g.description LIKE ?)
+                 ORDER BY g.created_at DESC";
+        $stmt = $db->prepare($query);
+        $searchParam = "%{$search}%";
+        $stmt->execute([$category_id, $searchParam, $searchParam]);
+    } else {
+        $query = "SELECT g.*, c.name as category_name 
+                 FROM gallery g 
+                 LEFT JOIN categories c ON g.category_id = c.id
+                 WHERE g.title LIKE ? OR g.description LIKE ? OR c.name LIKE ?
+                 ORDER BY g.created_at DESC";
+        $stmt = $db->prepare($query);
+        $searchParam = "%{$search}%";
+        $stmt->execute([$searchParam, $searchParam, $searchParam]);
+    }
 } else {
-    $query = "SELECT g.*, c.name as category_name 
-             FROM gallery g 
-             LEFT JOIN categories c ON g.category_id = c.id
-             ORDER BY g.created_at DESC";
-    $stmt = $db->query($query);
+    // Regular query without search
+    if ($category_id > 0) {
+        $query = "SELECT g.*, c.name as category_name 
+                 FROM gallery g 
+                 LEFT JOIN categories c ON g.category_id = c.id 
+                 WHERE g.category_id = ?
+                 ORDER BY g.created_at DESC";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$category_id]);
+    } else {
+        $query = "SELECT g.*, c.name as category_name 
+                 FROM gallery g 
+                 LEFT JOIN categories c ON g.category_id = c.id
+                 ORDER BY g.created_at DESC";
+        $stmt = $db->query($query);
+    }
 }
 
 $gallery_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
+if (!empty($search)) {
+    $pageTitle = 'Arama: ' . $search . ($category ? ' - ' . $category['name'] : '');
+}
 ?>
 
 <!DOCTYPE html>
@@ -63,11 +93,19 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
             <nav class="breadcrumb">
                 <a href="galeri.php">Galeri</a>
                 <i class="fas fa-chevron-right"></i>
-                <span><?php echo htmlspecialchars($pageTitle); ?></span>
+                <?php if (!empty($search)): ?>
+                    <a href="<?php echo $category_id > 0 ? 'kategori-detay.php?id=' . $category_id : 'galeri.php'; ?>">
+                        <?php echo $category ? htmlspecialchars($category['name']) : 'Tüm Görseller'; ?>
+                    </a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Arama: <?php echo htmlspecialchars($search); ?></span>
+                <?php else: ?>
+                    <span><?php echo htmlspecialchars($pageTitle); ?></span>
+                <?php endif; ?>
             </nav>
             <div class="hero-info">
                 <h1><?php echo htmlspecialchars($pageTitle); ?></h1>
-                <?php if ($category && !empty($category['description'])): ?>
+                <?php if ($category && !empty($category['description']) && empty($search)): ?>
                     <p class="hero-description"><?php echo htmlspecialchars($category['description']); ?></p>
                 <?php endif; ?>
                 <div class="hero-meta">
@@ -75,9 +113,15 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
                         <i class="fas fa-images"></i>
                         <?php echo count($gallery_items); ?> Görsel
                     </span>
-                    <a href="galeri.php" class="back-button">
-                        <i class="fas fa-arrow-left"></i> Kategorilere Dön
-                    </a>
+                    <?php if (!empty($search)): ?>
+                        <a href="<?php echo $category_id > 0 ? 'kategori-detay.php?id=' . $category_id : 'galeri.php'; ?>" class="back-button">
+                            <i class="fas fa-arrow-left"></i> <?php echo $category_id > 0 ? 'Kategoriye Dön' : 'Tüm Kategorilere Dön'; ?>
+                        </a>
+                    <?php else: ?>
+                        <a href="galeri.php" class="back-button">
+                            <i class="fas fa-arrow-left"></i> Kategorilere Dön
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -99,6 +143,9 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
                     </button>
                     <button data-view="masonry">
                         <i class="fas fa-th-large"></i>
+                    </button>
+                    <button data-view="list">
+                        <i class="fas fa-list"></i>
                     </button>
                 </div>
             </div>
@@ -124,10 +171,14 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div class="empty-gallery">
-                <i class="fas fa-image"></i>
-                <p>Bu kategoride henüz görsel bulunmuyor.</p>
-                <a href="galeri.php" class="btn btn-primary mt-3">Diğer Kategorileri Keşfet</a>
+            <!-- No Results Message -->
+            <div class="no-results">
+                <i class="fas fa-search fa-3x mb-3"></i>
+                <h3>Arama sonucu bulunamadı</h3>
+                <p>Farklı anahtar kelimelerle tekrar aramayı deneyin.</p>
+                <a href="<?php echo $category_id > 0 ? 'kategori-detay.php?id=' . $category_id : 'galeri.php'; ?>" class="btn mt-3">
+                    <i class="fas fa-arrow-left"></i> <?php echo $category_id > 0 ? 'Kategoriye Dön' : 'Tüm Kategorilere Dön'; ?>
+                </a>
             </div>
         <?php endif; ?>
     </div>

@@ -1,6 +1,43 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/db.php';
+
+// Check if search parameter exists
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Arama terimini vurgulama fonksiyonu
+function highlightSearchTerm($text, $searchTerm) {
+    if (empty($searchTerm)) {
+        return $text;
+    }
+    
+    // HTML güvenliği için önce htmlspecialchars uygula
+    $text = htmlspecialchars($text);
+    $searchTerm = htmlspecialchars($searchTerm);
+    
+    // Büyük/küçük harf duyarsız arama için
+    $pattern = '/(' . preg_quote($searchTerm, '/') . ')/i';
+    $replacement = '<span class="highlight">$1</span>';
+    
+    return preg_replace($pattern, $replacement, $text);
+}
+
+// Başlıkları temizleme fonksiyonu
+function cleanTitle($title) {
+    // (1/3), (2/5) gibi ifadeleri temizle
+    $title = preg_replace('/\s*\(\d+\/\d+\)\s*/', '', $title);
+    
+    // [1], [2] gibi ifadeleri temizle
+    $title = preg_replace('/\s*\[\d+\]\s*/', '', $title);
+    
+    // (1), (2) gibi ifadeleri temizle
+    $title = preg_replace('/\s*\(\d+\)\s*/', '', $title);
+    
+    // Başlık sonundaki fazla boşlukları temizle
+    $title = trim($title);
+    
+    return $title;
+}
 ?>
 
 
@@ -13,11 +50,12 @@ require_once 'includes/db.php';
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/favicon.ico">
     <meta name="msapplication-TileImage" content="assets/images/favicon.ico">
-    <title>Galeri - Renkli Perde Tasarım</title>
+    <title><?php echo !empty($search) ? 'Arama: ' . htmlspecialchars($search) . ' - ' : ''; ?>Galeri - Renkli Perde Tasarım</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/gallery.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Lightbox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
@@ -26,48 +64,176 @@ require_once 'includes/db.php';
         <!-- Başlık ve Açıklama -->
         <div class="gallery-header text-center">
             <div style="height: 80px;"></div>
-            <h1 class="h2 fw-bold">KATEGORİLER</h1>
+            <?php if (!empty($search)): ?>
+                <h1 class="h2 fw-bold">"<?php echo htmlspecialchars($search); ?>" İÇİN ARAMA SONUÇLARI</h1>
+                <p>Arama sonuçlarını aşağıda görebilirsiniz.</p>
+                <a href="galeri.php" class="btn btn-outline-primary mt-3">
+                    <i class="fas fa-arrow-left"></i> Tüm Kategorilere Dön
+                </a>
+            <?php else: ?>
+                <h1 class="h2 fw-bold">KATEGORİLER</h1>
+            <?php endif; ?>
         </div>
 
-        <!-- Kategori Grid -->
-        <div class="category-grid" style="margin-top: 60px;">
-            <!-- Tüm Fotoğraflar Kartı -->
-            <?php
-            // Toplam fotoğraf sayısını al
-            $stmt = $db->query("SELECT COUNT(*) as total FROM gallery");
-            $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-            ?>
-
-            <?php
-            $stmt = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery WHERE category_id = c.id) as image_count FROM categories c ORDER BY name");
-            while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $categoryImage = !empty($category['image']) ? 'images/uploads/categories/'.$category['image'] : 'assets/img/default-category.jpg';
+        <?php if (!empty($search)): ?>
+            <!-- Search Results -->
+            <div class="search-results">
+                <?php
+                // Search in gallery items
+                $stmt = $db->prepare("SELECT g.*, c.name as category_name 
+                                     FROM gallery g 
+                                     LEFT JOIN categories c ON g.category_id = c.id 
+                                     WHERE g.title LIKE ? OR g.description LIKE ? OR c.name LIKE ?
+                                     ORDER BY g.created_at DESC");
+                $searchParam = "%{$search}%";
+                $stmt->execute([$searchParam, $searchParam, $searchParam]);
+                $searchResults = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                if (count($searchResults) > 0): 
                 ?>
-                <a href="kategori-detay.php?id=<?php echo $category['id']; ?>" class="category-card">
-                    <div class="category-card-image">
-                        <div class="category-card-bg" style="background-image: url('<?php echo $categoryImage; ?>');">
-                            <div class="category-card-overlay">
-                                <div class="overlay-content">
-                                    <span class="image-count">
-                                        <i class="fas fa-images"></i>
-                                        <?php echo $category['image_count']; ?> görsel
-                                    </span>
-                                    <span class="view-category">
-                                        Kategoriyi Görüntüle <i class="fas fa-arrow-right"></i>
-                                    </span>
+                    <!-- Gallery Controls -->
+                    <div class="gallery-controls">
+                        <div class="gallery-filters">
+                            <button class="active" data-sort="newest">En Yeni</button>
+                            <button data-sort="oldest">En Eski</button>
+                            <button data-sort="title">İsme Göre</button>
+                        </div>
+                        <div class="view-options">
+                            <button class="active" data-view="grid">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button data-view="masonry">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-images-grid" id="searchResultsContainer">
+                        <?php foreach ($searchResults as $item): 
+                            // Arama teriminin nerede geçtiğini belirle
+                            $matchType = '';
+                            $matchText = '';
+                            
+                            // Başlıkta arama
+                            if (stripos($item['title'], $search) !== false) {
+                                $matchType = 'title';
+                                $matchText = $item['title'];
+                            } 
+                            // Açıklamada arama
+                            elseif (!empty($item['description']) && stripos($item['description'], $search) !== false) {
+                                $matchType = 'description';
+                                $matchText = $item['description'];
+                            }
+                            // Kategoride arama
+                            elseif (!empty($item['category_name']) && stripos($item['category_name'], $search) !== false) {
+                                $matchType = 'category';
+                                $matchText = $item['category_name'];
+                            }
+                        ?>
+                            <div class="gallery-image-item" data-date="<?php echo strtotime($item['created_at']); ?>">
+                                <a href="images/uploads/<?php echo $item['image']; ?>" class="gallery-link" data-fancybox="gallery" data-caption="<?php 
+                                    // Başlıktaki (1/3) gibi ifadeleri temizle
+                                    $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
+                                    echo htmlspecialchars($cleanTitle); 
+                                ?>">
+                                    <img src="images/uploads/<?php echo $item['image']; ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" loading="lazy">
+                                    <div class="gallery-item-overlay">
+                                        <div class="gallery-item-info">
+                                            <h3><?php 
+                                                // Başlıktaki (1/3) gibi ifadeleri temizle
+                                                $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
+                                                echo highlightSearchTerm($cleanTitle, $search); 
+                                            ?></h3>
+                                            
+                                            <?php if (!empty($item['category_name'])): ?>
+                                                <span class="category"><?php echo highlightSearchTerm($item['category_name'], $search); ?></span>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!empty($matchType)): ?>
+                                                <div class="match-info">
+                                                    <span class="match-label">Eşleşme: </span>
+                                                    <?php if ($matchType == 'title'): ?>
+                                                        <span class="match-type">Başlık</span>
+                                                    <?php elseif ($matchType == 'description'): ?>
+                                                        <span class="match-type">Açıklama</span>
+                                                    <?php elseif ($matchType == 'category'): ?>
+                                                        <span class="match-type">Kategori</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!empty($item['description'])): ?>
+                                                <p class="item-description"><?php echo highlightSearchTerm(substr($item['description'], 0, 100), $search); ?><?php echo (strlen($item['description']) > 100) ? '...' : ''; ?></p>
+                                            <?php endif; ?>
+                                            
+                                            <span class="view-image">
+                                                <i class="fas fa-search-plus"></i> Büyüt
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="gallery-item-title">
+                                    <h4><?php 
+                                        // Başlıktaki (1/3) gibi ifadeleri temizle
+                                        $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
+                                        echo highlightSearchTerm($cleanTitle, $search); 
+                                    ?></h4>
+                                    <?php if (!empty($item['category_name'])): ?>
+                                        <span class="category-badge"><?php echo highlightSearchTerm($item['category_name'], $search); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="no-results">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h3>Arama sonucu bulunamadı</h3>
+                        <p>Farklı anahtar kelimelerle tekrar aramayı deneyin.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <!-- Kategori Grid -->
+            <div class="category-grid" style="margin-top: 60px;">
+                <!-- Tüm Fotoğraflar Kartı -->
+                <?php
+                // Toplam fotoğraf sayısını al
+                $stmt = $db->query("SELECT COUNT(*) as total FROM gallery");
+                $total = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+                ?>
+
+                <?php
+                $stmt = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery WHERE category_id = c.id) as image_count FROM categories c ORDER BY name");
+                while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $categoryImage = !empty($category['image']) ? 'images/uploads/categories/'.$category['image'] : 'assets/img/default-category.jpg';
+                    ?>
+                    <a href="kategori-detay.php?id=<?php echo $category['id']; ?>" class="category-card">
+                        <div class="category-card-image">
+                            <div class="category-card-bg" style="background-image: url('<?php echo $categoryImage; ?>');">
+                                <div class="category-card-overlay">
+                                    <div class="overlay-content">
+                                        <span class="image-count">
+                                            <i class="fas fa-images"></i>
+                                            <?php echo $category['image_count']; ?> görsel
+                                        </span>
+                                        <span class="view-category">
+                                            Kategoriyi Görüntüle <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="category-card-content">
-                        <h3><?php echo htmlspecialchars($category['name']); ?></h3>
-                        <?php if (!empty($category['description'])): ?>
-                            <p><?php echo htmlspecialchars($category['description']); ?></p>
-                        <?php endif; ?>
-                    </div>
-                </a>
-            <?php } ?>
-        </div>
+                        <div class="category-card-content">
+                            <h3><?php echo htmlspecialchars($category['name']); ?></h3>
+                            <?php if (!empty($category['description'])): ?>
+                                <p><?php echo htmlspecialchars($category['description']); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                <?php } ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <style>
@@ -423,6 +589,118 @@ require_once 'includes/db.php';
         }
     }
     </style>
+
+    <!-- Lightbox JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <!-- Masonry JS -->
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    
+    <script>
+        // Initialize Fancybox
+        document.addEventListener('DOMContentLoaded', function() {
+            Fancybox.bind('[data-fancybox="gallery"]', {
+                dragToClose: false,
+                Toolbar: {
+                    display: {
+                        left: ["infobar"],
+                        middle: [
+                            "zoomIn",
+                            "zoomOut",
+                            "toggle1to1",
+                            "rotateCCW",
+                            "rotateCW",
+                            "flipX",
+                            "flipY",
+                        ],
+                        right: ["slideshow", "thumbs", "close"],
+                    },
+                }
+            });
+            
+            // Set search input value from URL parameter if exists
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = searchParam;
+                }
+            }
+            
+            // Initialize Masonry for search results
+            let msnry = null;
+            const searchResultsContainer = document.getElementById('searchResultsContainer');
+            
+            if (searchResultsContainer) {
+                // View Switching
+                document.querySelectorAll('.view-options button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.view-options button').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        if (button.dataset.view === 'masonry') {
+                            searchResultsContainer.classList.add('masonry-layout');
+                            initMasonry();
+                        } else {
+                            searchResultsContainer.classList.remove('masonry-layout');
+                            if (msnry) {
+                                msnry.destroy();
+                                msnry = null;
+                            }
+                        }
+                    });
+                });
+                
+                // Sorting
+                document.querySelectorAll('.gallery-filters button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.gallery-filters button').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        const items = Array.from(document.querySelectorAll('.gallery-image-item'));
+                        items.sort((a, b) => {
+                            if (button.dataset.sort === 'title') {
+                                const titleA = a.querySelector('h3').textContent.trim();
+                                const titleB = b.querySelector('h3').textContent.trim();
+                                return titleA.localeCompare(titleB);
+                            } else if (button.dataset.sort === 'oldest') {
+                                return parseInt(a.dataset.date) - parseInt(b.dataset.date);
+                            } else {
+                                return parseInt(b.dataset.date) - parseInt(a.dataset.date);
+                            }
+                        });
+                        
+                        searchResultsContainer.innerHTML = '';
+                        items.forEach(item => searchResultsContainer.appendChild(item));
+                        
+                        if (msnry) {
+                            msnry.reloadItems();
+                            msnry.layout();
+                        }
+                    });
+                });
+                
+                function initMasonry() {
+                    if (typeof Masonry !== 'undefined') {
+                        msnry = new Masonry(searchResultsContainer, {
+                            itemSelector: '.gallery-image-item',
+                            columnWidth: '.gallery-image-item',
+                            percentPosition: true,
+                            transitionDuration: '0.3s'
+                        });
+                    } else {
+                        // Masonry yüklenmemişse, yükleyelim
+                        const script = document.createElement('script');
+                        script.src = 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js';
+                        script.onload = function() {
+                            initMasonry();
+                        };
+                        document.head.appendChild(script);
+                    }
+                }
+            }
+        });
+    </script>
 
     <?php include 'includes/footer.php'; ?>
 </body>
