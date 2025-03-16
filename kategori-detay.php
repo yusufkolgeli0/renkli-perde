@@ -113,7 +113,6 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
                          alt="<?php echo htmlspecialchars($item['title']); ?>"
                          loading="lazy">
                     <div class="gallery-item-overlay">
-                        <h3><?php echo htmlspecialchars($item['title']); ?></h3>
                         <?php if (!empty($item['description'])): ?>
                             <p><?php echo htmlspecialchars($item['description']); ?></p>
                         <?php endif; ?>
