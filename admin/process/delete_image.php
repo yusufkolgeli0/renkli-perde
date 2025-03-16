@@ -25,7 +25,7 @@ try {
     $stmt->execute([$id]);
 
     // Delete file from server
-    $imagePath = '../../images/' . $image;
+    $imagePath = '../../images/uploads/' . $image;
     if (file_exists($imagePath)) {
         unlink($imagePath);
     }

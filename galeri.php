@@ -35,7 +35,7 @@ require_once 'includes/db.php';
             <?php
             $stmt = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery WHERE category_id = c.id) as image_count FROM categories c ORDER BY name");
             while ($category = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $categoryImage = !empty($category['image']) ? 'images/categories/'.$category['image'] : 'assets/img/default-category.jpg';
+                $categoryImage = !empty($category['image']) ? 'images/uploads/categories/'.$category['image'] : 'assets/img/default-category.jpg';
                 ?>
                 <a href="kategori-detay.php?id=<?php echo $category['id']; ?>" class="category-card">
                     <div class="category-card-image">

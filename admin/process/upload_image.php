@@ -26,7 +26,7 @@ try {
     // Benzersiz dosya adı oluştur
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
     $filename = uniqid() . '.' . $extension;
-    $uploadPath = '../../images/' . $filename;
+    $uploadPath = '../../images/uploads/' . $filename;
 
     // Dosyayı yükle
     if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {

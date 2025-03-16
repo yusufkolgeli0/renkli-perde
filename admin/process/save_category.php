@@ -24,11 +24,11 @@ try {
         // Benzersiz dosya adı oluştur
         $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $image_name = uniqid('category_') . '.' . $extension;
-        $upload_path = '../../images/categories/' . $image_name;
+        $upload_path = '../../images/uploads/categories/' . $image_name;
         
         // Dizin kontrolü
-        if (!is_dir('../../images/categories')) {
-            mkdir('../../images/categories', 0777, true);
+        if (!is_dir('../../images/uploads/categories')) {
+            mkdir('../../images/uploads/categories', 0777, true);
         }
         
         // Dosyayı yükle
@@ -45,8 +45,8 @@ try {
             $stmt = $db->prepare("SELECT image FROM categories WHERE id = ?");
             $stmt->execute([$id]);
             $old_image = $stmt->fetchColumn();
-            if ($old_image && file_exists('../../images/categories/' . $old_image)) {
-                unlink('../../images/categories/' . $old_image);
+            if ($old_image && file_exists('../../images/uploads/categories/' . $old_image)) {
+                unlink('../../images/uploads/categories/' . $old_image);
             }
             
             // Yeni görsel ile güncelle

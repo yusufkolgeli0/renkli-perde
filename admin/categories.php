@@ -429,7 +429,7 @@ function loadCategories(searchTerm = '') {
                         <div class="col-md-6 col-lg-4">
                             <div class="category-card shadow ${!category.image ? 'no-image' : ''}">
                                 ${category.image ? `
-                                    <img src="../images/categories/${category.image}" 
+                                    <img src="../images/uploads/categories/${category.image}" 
                                          alt="${category.name}">
                                 ` : ''}
                                 <div class="category-card-overlay">
@@ -475,7 +475,7 @@ function editCategory(id) {
                 
                 if (category.image) {
                     const preview = document.getElementById('imagePreview');
-                    preview.querySelector('img').src = `../images/categories/${category.image}`;
+                    preview.querySelector('img').src = `../images/uploads/categories/${category.image}`;
                     preview.style.display = 'block';
                 }
                 

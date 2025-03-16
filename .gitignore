@@ -28,22 +28,8 @@ Thumbs.db
 /logs/*
 
 # Uploaded files/images
-/images/*
 !/images/.gitkeep
-/images/categories/*
-!/images/categories/.gitkeep
-!images/qr-code.png
-!images/hero-bg.jpg
-!images/hero-bg2.jpg
-!images/hero-bg3.jpg
-!images/no-image.jpg
-!images/perde1.jpg
-!images/perde2.jpg
-!images/perde3.jpg
-!images/perde4.jpg
-!images/perde5.jpg
-!images/perde6.jpg
-!images/perde7.jpg
+/images/uploads/*
 
 # Cache and temporary files
 /cache/*

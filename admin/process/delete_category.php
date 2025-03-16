@@ -30,8 +30,8 @@ try {
     }
     
     // Kategori görselini sil
-    if ($category['image'] && file_exists('../../images/categories/' . $category['image'])) {
-        unlink('../../images/categories/' . $category['image']);
+    if ($category['image'] && file_exists('../../images/uploads/categories/' . $category['image'])) {
+        unlink('../../images/uploads/categories/' . $category['image']);
     }
     
     // Kategoriyi sil

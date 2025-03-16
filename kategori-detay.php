@@ -106,10 +106,10 @@ $pageTitle = $category ? $category['name'] : 'Tüm Görseller';
             <div class="gallery-grid" id="galleryContainer">
                 <?php foreach ($gallery_items as $item): ?>
                 <div class="gallery-item" data-fancybox="gallery" 
-                     data-src="images/<?php echo htmlspecialchars($item['image']); ?>"
+                     data-src="images/uploads/<?php echo htmlspecialchars($item['image']); ?>"
                      data-caption="<?php echo htmlspecialchars($item['title']); ?>"
                      data-date="<?php echo strtotime($item['created_at']); ?>">
-                    <img src="images/<?php echo htmlspecialchars($item['image']); ?>" 
+                    <img src="images/uploads/<?php echo htmlspecialchars($item['image']); ?>" 
                          alt="<?php echo htmlspecialchars($item['title']); ?>"
                          loading="lazy">
                     <div class="gallery-item-overlay">

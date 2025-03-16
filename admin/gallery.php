@@ -689,7 +689,7 @@ function displayGalleryItems(containerId, items) {
             <div class="gallery-item">
                 <div class="card">
                     <div class="position-relative">
-                        <img src="../images/${item.image}" class="card-img-top" alt="${item.title}"
+                        <img src="../images/uploads/${item.image}" class="card-img-top" alt="${item.title}"
                              loading="lazy" onerror="this.src='assets/img/placeholder.jpg'">
                         <div class="position-absolute top-0 end-0 p-2">
                             <button class="btn btn-icon-only btn-light btn-sm rounded-circle shadow-sm me-1" 
@@ -844,7 +844,7 @@ function editGalleryItem(id) {
                 document.getElementById('editTitle').value = item.title;
                 document.getElementById('editCategory').value = item.category_id;
                 document.getElementById('editDescription').value = item.description || '';
-                document.getElementById('editImagePreview').querySelector('img').src = `../images/${item.image}`;
+                document.getElementById('editImagePreview').querySelector('img').src = `../images/uploads/${item.image}`;
                 $('#editGalleryModal').modal('show');
             }
         })

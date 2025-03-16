@@ -19,8 +19,8 @@ try {
     }
     
     // Görseli sil
-    if ($gallery['image'] && file_exists('../../images/' . $gallery['image'])) {
-        unlink('../../images/' . $gallery['image']);
+    if ($gallery['image'] && file_exists('../../images/uploads/' . $gallery['image'])) {
+        unlink('../../images/uploads/' . $gallery['image']);
     }
     
     // Veritabanından sil

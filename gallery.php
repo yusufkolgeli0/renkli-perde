@@ -160,7 +160,7 @@ function loadCategories() {
                     container.innerHTML += `
                         <div class="category-item ${currentCategoryId === category.id ? 'active' : ''}" 
                              onclick="filterGallery(${category.id})">
-                            <img src="${category.image ? 'images/categories/' + category.image : 'images/no-image.jpg'}" 
+                            <img src="${category.image ? 'images/uploads/categories/' + category.image : 'images/no-image.jpg'}" 
                                  alt="${category.name}">
                             <div class="category-info">
                                 <h4>${category.name}</h4>
@@ -210,8 +210,8 @@ function createGalleryItem(item) {
         imagePath = 'images/no-image.jpg';
     } else {
         imagePath = item.image.startsWith('category_') ? 
-            `images/categories/${item.image}` : 
-            `images/${item.image}`;
+            `images/uploads/categories/${item.image}` : 
+            `images/uploads/${item.image}`;
     }
     
     return `

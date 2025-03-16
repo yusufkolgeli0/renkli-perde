@@ -41,7 +41,7 @@ try {
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 
-    $images_path = '../../images';
+    $images_path = '../../images/uploads/';
     $disk_usage = format_size(get_directory_size($images_path));
 
     echo json_encode([

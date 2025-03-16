@@ -47,10 +47,10 @@ try {
         // Benzersiz dosya adı oluştur
         $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $image_name = uniqid('gallery_') . '.' . $extension;
-        $upload_path = '../../images/' . $image_name;
+        $upload_path = '../../images/uploads/' . $image_name;
         
         // Dizin kontrolü
-        $upload_dir = '../../images';
+        $upload_dir = '../../images/uploads/';
         if (!file_exists($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
                 throw new Exception('Dizin oluşturulamadı.');
@@ -75,8 +75,8 @@ try {
             $stmt = $db->prepare("SELECT image FROM gallery WHERE id = ?");
             $stmt->execute([$id]);
             $old_image = $stmt->fetchColumn();
-            if ($old_image && file_exists('../../images/' . $old_image)) {
-                unlink('../../images/' . $old_image);
+            if ($old_image && file_exists('../../images/uploads/' . $old_image)) {
+                unlink('../../images/uploads/' . $old_image);
             }
             
             // Yeni görsel ile güncelle
