@@ -10,7 +10,7 @@
             <div class="footer-section">
                 <h3>Hızlı Bağlantılar</h3>
                 <ul>
-                    <li><a href="index.php">Anasayfa</a></li>
+                    <li><a href="/">Anasayfa</a></li>
                     <li><a href="galeri.php">Galeri</a></li>
                     <li><a href="hakkimizda.php">Biz Kimiz</a></li>
                     <li><a href="iletisim.php">İletişim</a></li>
@@ -27,4 +27,9 @@
             <p>&copy; <?php echo date('Y'); ?> Renkli Perde Tasarım. Tüm hakları saklıdır.</p>
         </div>
     </div>
-</footer> 
+</footer>
+
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<!-- Custom JavaScript -->
+<script src="js/script.js"></script> 
