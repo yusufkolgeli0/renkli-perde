@@ -32,4 +32,6 @@
 <!-- Font Awesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 <!-- Custom JavaScript -->
-<script src="js/script.js"></script> 
+<script src="/assets/js/script.js"></script>
+</body>
+</html>

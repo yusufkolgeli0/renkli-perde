@@ -47,7 +47,5 @@ require_once 'includes/db.php';
     </main>
 
     <?php include 'includes/footer.php'; ?>
-
-    <script src="assets/js/main.js"></script>
 </body>
 </html> 

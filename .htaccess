@@ -30,4 +30,17 @@ DirectoryIndex index.html index.php
 
 # Enable PHP error logging
 php_flag log_errors on
-php_value error_log logs/error.log 
+php_value error_log logs/error.log
+
+AddType image/x-icon .ico
+AddType image/vnd.microsoft.icon .ico
+
+# Enable CORS for favicon
+<Files "favicon.ico">
+    Header set Access-Control-Allow-Origin "*"
+</Files>
+
+# Cache control for favicon
+<FilesMatch "favicon\.ico$">
+    Header set Cache-Control "max-age=86400, public"
+</FilesMatch> 

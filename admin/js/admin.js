@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Sidebar toggle
-    const toggleBtn = document.querySelector('.toggle-sidebar');
+    const toggleSidebar = document.querySelector('.toggle-sidebar');
     const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
     
-    if(toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
+    if (toggleSidebar) {
+        toggleSidebar.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
         });
     }
 
@@ -28,38 +30,64 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Silme işlemi onayı
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            if(!confirm('Bu öğeyi silmek istediğinizden emin misiniz?')) {
-                e.preventDefault();
-            }
-        });
-    });
-
     // Form doğrulama
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const requiredFields = form.querySelectorAll('[required]');
-            let isValid = true;
-
-            requiredFields.forEach(field => {
-                if(!field.value.trim()) {
-                    isValid = false;
-                    field.classList.add('error');
-                } else {
-                    field.classList.remove('error');
+    const forms = document.querySelectorAll('form.validate');
+    
+    if (forms.length > 0) {
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        isValid = false;
+                        showError(field, 'Bu alan boş bırakılamaz');
+                    } else {
+                        removeError(field);
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
                 }
             });
-
-            if(!isValid) {
-                e.preventDefault();
-                alert('Lütfen tüm gerekli alanları doldurun.');
-            }
         });
-    });
+    }
+    
+    // Yardımcı fonksiyonlar
+    function showError(input, message) {
+        const formGroup = input.closest('.form-group');
+        const errorDiv = formGroup.querySelector('.error-message') || document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerText = message;
+        if (!formGroup.querySelector('.error-message')) {
+            formGroup.appendChild(errorDiv);
+        }
+        input.classList.add('error');
+    }
+    
+    function removeError(input) {
+        const formGroup = input.closest('.form-group');
+        const errorDiv = formGroup.querySelector('.error-message');
+        if (errorDiv) {
+            formGroup.removeChild(errorDiv);
+        }
+        input.classList.remove('error');
+    }
+    
+    // Onay kutusu
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    
+    if (deleteButtons.length > 0) {
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Bu öğeyi silmek istediğinizden emin misiniz?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    }
 
     // Dashboard Animasyonları
     // Stat kartları için animasyon
