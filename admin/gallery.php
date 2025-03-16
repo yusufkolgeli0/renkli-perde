@@ -291,197 +291,364 @@ if (isset($_SESSION['success_message'])): ?>
     </div>
 </div>
 
+<!-- Silme Onay Diyalogu -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Görseli Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
+                <h5 class="mb-3">Emin misiniz?</h5>
+                <p class="text-muted mb-0">Bu görseli silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger px-4" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toplu Silme Onay Diyalogu -->
+<div class="modal fade" id="bulkDeleteConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Görselleri Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+                <h5 class="mb-3">Toplu Silme İşlemi</h5>
+                <p class="text-muted mb-0">Seçili görselleri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+                <div class="mt-3 text-primary">
+                    <strong class="selected-count">0</strong>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger px-4" id="confirmBulkDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>Seçilenleri Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bildirim Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong class="me-auto">Bildirim</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>
+
 <style>
+/* Ana stil değişkenleri */
+:root {
+    --primary-color: #4e73df;
+    --success-color: #1cc88a;
+    --danger-color: #e74a3b;
+    --background-light: #f8f9fc;
+    --background-dark: #1a1a1a;
+    --text-light: #5a5c69;
+    --text-dark: #e9ecef;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 .gallery-masonry {
-    columns: 8 140px;
-    column-gap: 0.75rem;
-    padding: 0.75rem;
+    columns: 6 200px;
+    column-gap: 1rem;
+    padding: 1rem;
     margin: 0 auto;
     max-width: 1800px;
 }
 
 .gallery-item {
     break-inside: avoid;
-    margin-bottom: 0.75rem;
-    display: inline-block;
-    width: 100%;
-    max-width: 200px;
+    margin-bottom: 1rem;
+    position: relative;
+    max-width: 250px;
 }
 
 .gallery-item .card {
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
     margin-bottom: 0;
-    background: #fff;
+    background: var(--background-light);
 }
 
 .gallery-item .card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
 }
 
 .gallery-item .card-img-top {
     aspect-ratio: 1;
-    height: 140px;
+    height: 200px;
     object-fit: cover;
     width: 100%;
 }
 
-.gallery-item .card-body {
-    padding: 0.5rem;
+.gallery-item .checkbox-wrapper {
+    position: absolute;
+    top: 10px;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
 }
 
-.gallery-item .card-title {
-    font-size: 0.8rem;
-    margin-bottom: 0.25rem;
-    line-height: 1.2;
+.gallery-item .form-check-input {
+    width: 18px;
+    height: 18px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.gallery-item .card-text {
-    font-size: 0.75rem;
-    margin-bottom: 0;
-    line-height: 1.2;
+.gallery-item .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.gallery-item .btn-icon-only {
+.gallery-item .card-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.gallery-item .card:hover .card-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.gallery-item .btn-action {
     width: 28px;
     height: 28px;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.9);
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.empty-gallery-message {
-    text-align: center;
-    padding: 3rem;
-    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-    border-radius: 12px;
-    margin: 1rem;
-}
-
-.empty-gallery-message i {
-    font-size: 3rem;
-    color: #4e73df;
-    margin-bottom: 1rem;
-}
-
-.empty-gallery-message p {
-    font-size: 1.1rem;
-    color: #6c757d;
-    margin: 0;
-}
-
-/* Tab stilleri */
-.nav-tabs {
+    backdrop-filter: blur(4px);
     border: none;
-    margin-bottom: 1rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding-bottom: 5px;
+    color: var(--text-light);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-size: 0.85rem;
 }
 
-.nav-tabs::-webkit-scrollbar {
-    display: none;
+.gallery-item .btn-action:hover {
+    transform: translateY(-2px);
 }
 
-.nav-tabs .nav-item {
-    margin: 0 0.25rem;
-    white-space: nowrap;
-}
-
-.nav-tabs .nav-link {
-    border: none;
-    background: #f8f9fa;
-    color: #6c757d;
-    padding: 0.75rem 1.25rem;
-    border-radius: 50px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.nav-tabs .nav-link:hover {
-    background: #e9ecef;
-    color: #4e73df;
-}
-
-.nav-tabs .nav-link.active {
-    background: #4e73df;
+.gallery-item .btn-action.edit:hover {
+    background: var(--primary-color);
     color: white;
 }
 
-.category-count {
-    background: rgba(0,0,0,0.1);
-    padding: 0.2rem 0.6rem;
-    border-radius: 50px;
+.gallery-item .btn-action.delete:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.gallery-item .card-body {
+    padding: 0.75rem;
+}
+
+.gallery-item .card-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--text-light);
+    line-height: 1.3;
+}
+
+.gallery-item .category-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background: rgba(78, 115, 223, 0.1);
+    color: var(--primary-color);
+    display: inline-block;
+    margin-bottom: 0.4rem;
+}
+
+.gallery-item .card-text {
     font-size: 0.75rem;
-    margin-left: 0.5rem;
+    color: var(--text-light);
+    margin: 0;
+    line-height: 1.4;
 }
 
 /* Responsive düzenlemeler */
 @media (min-width: 1600px) {
     .gallery-masonry {
-        columns: 10 140px;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
 }
 
-@media (max-width: 1599px) {
+@media (max-width: 768px) {
     .gallery-masonry {
-        columns: 8 140px;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
+        padding: 0.75rem;
     }
-}
 
-@media (max-width: 1399px) {
-    .gallery-masonry {
-        columns: 7 140px;
-    }
-}
-
-@media (max-width: 1199px) {
-    .gallery-masonry {
-        columns: 6 140px;
-    }
-}
-
-@media (max-width: 991px) {
-    .gallery-masonry {
-        columns: 5 140px;
-    }
-}
-
-@media (max-width: 767px) {
-    .gallery-masonry {
-        columns: 4 140px;
-    }
-    
     .gallery-item .card-img-top {
-        height: 140px;
+        height: 120px;
     }
-}
 
-@media (max-width: 575px) {
-    .gallery-masonry {
-        columns: 3 140px;
-    }
-    
-    .gallery-item .card-img-top {
-        height: 140px;
-    }
-    
     .gallery-item .card-body {
         padding: 0.5rem;
     }
 }
+
+/* Karanlık mod stilleri */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-light: #2d2d2d;
+        --text-light: #e9ecef;
+        --card-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .gallery-item .card {
+        background: var(--background-light);
+    }
+    
+    .gallery-item .card-title,
+    .gallery-item .card-text {
+        color: var(--text-dark);
+    }
+    
+    .gallery-item .category-badge {
+        background: rgba(78, 115, 223, 0.2);
+        color: #89CFF0;
+    }
+    
+    .gallery-item .btn-action {
+        background: rgba(45, 45, 45, 0.9);
+        color: var(--text-dark);
+    }
+    
+    .nav-tabs .nav-link {
+        background: var(--background-light);
+        color: var(--text-dark);
+    }
+    
+    .nav-tabs .nav-link:hover {
+        background: #3d3d3d;
+    }
+    
+    .nav-tabs .nav-link.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .modal-content {
+        background: var(--background-light);
+        color: var(--text-dark);
+    }
+    
+    .text-muted {
+        color: #adb5bd !important;
+    }
+    
+    .form-check-input {
+        background-color: rgba(45, 45, 45, 0.9);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Bulk Actions Bar */
+.bulk-actions-bar {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.bulk-actions-bar.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.bulk-actions-bar .selected-count {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    .bulk-actions-bar {
+        background: rgba(45, 45, 45, 0.95);
+        color: var(--text-dark);
+    }
+}
+
+/* Toast Bildirimleri */
+.toast {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toast.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    .toast {
+        background: var(--background-light);
+        color: var(--text-dark);
+    }
+    
+    .toast-header {
+        background: #3d3d3d;
+        color: var(--text-dark);
+    }
+}
 </style>
+
+<!-- Bulk Actions Bar -->
+<div class="bulk-actions-bar">
+    <span class="selected-count">0 görsel seçildi</span>
+    <button class="btn btn-danger" onclick="showBulkDeleteConfirm()">
+        <i class="fas fa-trash me-2"></i>Seçilenleri Sil
+    </button>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -644,28 +811,67 @@ function updateCategoryTabs(categories) {
     });
 }
 
-function loadGalleryByCategories(categories) {
-    // Tüm görselleri yükle
-    fetch('process/get_gallery.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const items = data.data;
-                
-                // Tüm görselleri ana grid'e ekle
-                displayGalleryItems('galleryGrid', items);
-                document.querySelector('#all-tab .category-count').textContent = `(${items.length})`;
-                
-                // Kategorilere göre görselleri dağıt
-                categories.forEach(category => {
-                    const categoryItems = items.filter(item => item.category_id === category.id);
-                    displayGalleryItems(`gallery-cat-${category.id}`, categoryItems);
-                    document.querySelector(`#cat-${category.id}-tab .category-count`).textContent = 
-                        `(${categoryItems.length})`;
-                });
+async function loadGalleryByCategories(categories) {
+    // Yükleniyor göstergesi
+    document.querySelectorAll('.gallery-masonry').forEach(grid => {
+        grid.innerHTML = '<div class="text-center w-100 py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Yükleniyor...</span></div></div>';
+    });
+
+    try {
+        const response = await fetch('process/get_gallery.php');
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error('Galeri yüklenemedi');
+        }
+
+        const items = data.data;
+        
+        // Tüm görselleri ana grid'e ekle
+        displayGalleryItems('galleryGrid', items);
+        const allCountElement = document.querySelector('#all-tab .category-count');
+        if (allCountElement) {
+            allCountElement.textContent = `(${items.length})`;
+        }
+        
+        // Kategorilere göre görselleri dağıt
+        categories.forEach(category => {
+            const categoryItems = items.filter(item => item.category_id === category.id);
+            displayGalleryItems(`gallery-cat-${category.id}`, categoryItems);
+            const countElement = document.querySelector(`#cat-${category.id}-tab .category-count`);
+            if (countElement) {
+                countElement.textContent = `(${categoryItems.length})`;
             }
-        })
-        .catch(error => console.error('Error:', error));
+        });
+
+        return items;
+    } catch (error) {
+        console.error('Error loading gallery by categories:', error);
+        throw error;
+    }
+}
+
+async function loadGallery() {
+    try {
+        // Kategorileri yükle
+        const categoryResponse = await fetch('process/get_categories.php');
+        const categoryData = await categoryResponse.json();
+        
+        if (!categoryData.success) {
+            throw new Error('Kategoriler yüklenemedi');
+        }
+        
+        const categories = categoryData.data;
+        updateCategorySelects(categories);
+        updateCategoryTabs(categories);
+        
+        // Galeriyi yükle
+        return await loadGalleryByCategories(categories);
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        showNotification('Galeri yüklenirken bir hata oluştu.', 'error');
+        throw error;
+    }
 }
 
 function displayGalleryItems(containerId, items) {
@@ -689,28 +895,56 @@ function displayGalleryItems(containerId, items) {
             <div class="gallery-item">
                 <div class="card">
                     <div class="position-relative">
+                        <div class="checkbox-wrapper">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       onchange="handleItemSelection(${item.id}, this)"
+                                       ${selectedItems.has(item.id) ? 'checked' : ''}>
+                            </div>
+                        </div>
                         <img src="../images/uploads/${item.image}" class="card-img-top" alt="${item.title}"
                              loading="lazy" onerror="this.src='assets/img/placeholder.jpg'">
-                        <div class="position-absolute top-0 end-0 p-2">
-                            <button class="btn btn-icon-only btn-light btn-sm rounded-circle shadow-sm me-1" 
-                                    onclick="editGalleryItem(${item.id})" title="Düzenle">
+                        <div class="card-actions">
+                            <button class="btn-action edit" onclick="editGalleryItem(${item.id})" title="Düzenle">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-icon-only btn-light btn-sm rounded-circle shadow-sm" 
-                                    onclick="deleteGalleryItem(${item.id})" title="Sil">
+                            <button class="btn-action delete" onclick="deleteGalleryItem(${item.id})" title="Sil">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title text-truncate mb-1" title="${item.title}">${item.title}</h5>
-                        <p class="text-muted small mb-2">${item.category_name || 'Kategorisiz'}</p>
-                        ${item.description ? `<p class="card-text small text-truncate" title="${item.description}">${item.description}</p>` : ''}
+                        <h5 class="card-title text-truncate" title="${item.title}">${item.title}</h5>
+                        <span class="category-badge">${item.category_name || 'Kategorisiz'}</span>
+                        ${item.description ? `<p class="card-text text-truncate" title="${item.description}">${item.description}</p>` : ''}
                     </div>
                 </div>
             </div>
         `;
     });
+}
+
+function handleItemSelection(id, checkbox) {
+    if (checkbox.checked) {
+        selectedItems.add(id);
+    } else {
+        selectedItems.delete(id);
+    }
+    updateBulkActionsBar();
+}
+
+function updateBulkActionsBar() {
+    const count = selectedItems.size;
+    const bulkActionsBar = document.querySelector('.bulk-actions-bar');
+    
+    if (count > 0) {
+        bulkActionsBar.classList.add('show');
+        document.querySelectorAll('.selected-count').forEach(element => {
+            element.textContent = `${count} görsel seçildi`;
+        });
+    } else {
+        bulkActionsBar.classList.remove('show');
+    }
 }
 
 // Filtre fonksiyonlarını güncelle
@@ -758,23 +992,13 @@ function saveGalleryItem() {
     const form = document.getElementById('galleryForm');
     const formData = new FormData(form);
     
-    // Form verilerini kontrol et
+    // Form kontrollerini yap...
     const title = formData.get('title');
     const category = formData.get('category_id');
     const images = document.getElementById('image').files;
 
-    if (!title) {
-        showAlert('Lütfen başlık giriniz.', 'error');
-        return;
-    }
-
-    if (!category) {
-        showAlert('Lütfen kategori seçiniz.', 'error');
-        return;
-    }
-
-    if (images.length === 0) {
-        showAlert('Lütfen en az bir görsel seçiniz.', 'error');
+    if (!title || !category || images.length === 0) {
+        showNotification('Lütfen tüm gerekli alanları doldurun.', 'error');
         return;
     }
 
@@ -784,10 +1008,9 @@ function saveGalleryItem() {
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
     saveButton.disabled = true;
 
-    // Her bir görsel için ayrı bir kayıt oluştur
     const totalImages = images.length;
-    let processedImages = 0;
     let successCount = 0;
+    let uploadPromises = [];
 
     Array.from(images).forEach((file, index) => {
         const singleFormData = new FormData();
@@ -796,7 +1019,7 @@ function saveGalleryItem() {
         singleFormData.append('category_id', category);
         singleFormData.append('image', file);
 
-        fetch('process/save_gallery.php', {
+        const uploadPromise = fetch('process/save_gallery.php', {
             method: 'POST',
             body: singleFormData
         })
@@ -805,33 +1028,36 @@ function saveGalleryItem() {
             if (data.success) {
                 successCount++;
             }
+            return data;
+        });
+
+        uploadPromises.push(uploadPromise);
+    });
+
+    Promise.all(uploadPromises)
+        .then(() => {
+            if (successCount > 0) {
+                // Önce galeriyi güncelle
+                return loadGallery().then(() => {
+                    $('#addGalleryModal').modal('hide');
+                    form.reset();
+                    document.getElementById('imagePreview').innerHTML = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    showNotification(`${successCount} görsel başarıyla yüklendi.`, 'success');
+                    loadStats(); // İstatistikleri güncelle
+                });
+            } else {
+                throw new Error('Görseller yüklenirken bir hata oluştu.');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
+            showNotification(error.message || 'Görseller yüklenirken bir hata oluştu.', 'error');
         })
         .finally(() => {
-            processedImages++;
-            
-            // Tüm görseller işlendiyse
-            if (processedImages === totalImages) {
-                if (successCount > 0) {
-                    $('#addGalleryModal').modal('hide');
-                    form.reset();
-                    document.getElementById('imagePreview').style.display = 'none';
-                    loadGallery();
-                    showAlert(`${successCount} görsel başarıyla yüklendi.`, 'success');
-                } else {
-                    console.log('Görseller yüklenirken bir hata oluştu.');
-                    console.log(data);
-                    showAlert('Görseller yüklenirken bir hata oluştu.', 'error');
-                }
-                
-                // Yükleme bitti
-                saveButton.innerHTML = originalText;
-                saveButton.disabled = false;
-            }
+            saveButton.innerHTML = originalText;
+            saveButton.disabled = false;
         });
-    });
 }
 
 function editGalleryItem(id) {
@@ -864,37 +1090,74 @@ function updateGalleryItem() {
         if (data.success) {
             $('#editGalleryModal').modal('hide');
             loadGallery();
-            showAlert('Görsel başarıyla güncellendi.', 'success');
+            showNotification('Görsel başarıyla güncellendi.', 'success');
         } else {
-            showAlert(data.message, 'error');
+            showNotification(data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showAlert('Bir hata oluştu!', 'error');
+        showNotification('Bir hata oluştu!', 'error');
     });
 }
 
+let deleteItemId = null;
+
 function deleteGalleryItem(id) {
-    if (confirm('Bu görseli silmek istediğinizden emin misiniz?')) {
-        fetch(`process/delete_gallery.php?id=${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                loadGallery();
-                showAlert('Görsel başarıyla silindi.', 'success');
-            } else {
-                showAlert(data.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('Bir hata oluştu!', 'error');
-        });
-    }
+    deleteItemId = id;
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    modal.show();
 }
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+    if (!deleteItemId) return;
+    
+    const btn = this;
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...';
+    
+    try {
+        const response = await fetch(`process/delete_gallery.php?id=${deleteItemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        
+        if (!data || !data.success) {
+            throw new Error(data.message || 'Silme işlemi başarısız oldu.');
+        }
+
+        // Modal'ı kapat
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+        if (modal) {
+            modal.hide();
+        }
+
+        // Galeriyi güncelle
+        await loadGallery();
+        
+        // Bildirimi göster ve istatistikleri güncelle
+        showNotification('Görsel başarıyla silindi.', 'success');
+        loadStats();
+
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification(error.message || 'Görsel silinirken bir hata oluştu.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+        deleteItemId = null;
+    }
+});
 
 function showAlert(message, type) {
     const alertDiv = document.createElement('div');
@@ -924,6 +1187,106 @@ function loadStats() {
             }
         })
         .catch(error => console.error('Error:', error));
+}
+
+let isSelectMode = false;
+let selectedItems = new Set();
+
+function toggleSelectMode() {
+    isSelectMode = !isSelectMode;
+    document.querySelector('.gallery-masonry').classList.toggle('gallery-select-mode');
+    document.querySelector('.bulk-actions').classList.toggle('show');
+    if (!isSelectMode) {
+        selectedItems.clear();
+        updateSelectedCount();
+    }
+}
+
+function toggleItemSelection(id, element) {
+    if (!isSelectMode) return;
+    
+    const card = element.closest('.card');
+    if (selectedItems.has(id)) {
+        selectedItems.delete(id);
+        card.classList.remove('selected');
+    } else {
+        selectedItems.add(id);
+        card.classList.add('selected');
+    }
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const count = selectedItems.size;
+    document.querySelectorAll('.selected-count').forEach(el => {
+        el.innerHTML = `<strong>${count}</strong> görsel seçildi`;
+    });
+}
+
+function cancelSelection() {
+    isSelectMode = false;
+    selectedItems.clear();
+    document.querySelector('.gallery-masonry').classList.remove('gallery-select-mode');
+    document.querySelector('.bulk-actions').classList.remove('show');
+    document.querySelectorAll('.card.selected').forEach(card => {
+        card.classList.remove('selected');
+    });
+    updateSelectedCount();
+}
+
+function showBulkDeleteConfirm() {
+    if (selectedItems.size === 0) {
+        showNotification('Lütfen silmek istediğiniz görselleri seçin.', 'error');
+        return;
+    }
+    const modal = new bootstrap.Modal(document.getElementById('bulkDeleteConfirmModal'));
+    modal.show();
+}
+
+document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() {
+    if (selectedItems.size === 0) return;
+    
+    const btn = this;
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...';
+    
+    const deletePromises = Array.from(selectedItems).map(id => 
+        fetch(`process/delete_gallery.php?id=${id}`, { method: 'DELETE' })
+            .then(response => response.json())
+    );
+    
+    Promise.all(deletePromises)
+        .then(results => {
+            const successCount = results.filter(r => r.success).length;
+            bootstrap.Modal.getInstance(document.getElementById('bulkDeleteConfirmModal')).hide();
+            
+            if (successCount > 0) {
+                showNotification(`${successCount} görsel başarıyla silindi.`, 'success');
+                loadGallery();
+                cancelSelection();
+            } else {
+                showNotification('Görseller silinirken bir hata oluştu.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Bir hata oluştu.', 'error');
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        });
+});
+
+function showNotification(message, type = 'success') {
+    const toast = document.getElementById('notificationToast');
+    toast.classList.remove('success', 'error');
+    toast.classList.add(type);
+    toast.querySelector('.toast-body').textContent = message;
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
 }
 </script>
 
