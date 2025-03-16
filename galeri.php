@@ -114,10 +114,13 @@ function cleanTitle($title) {
                             $matchType = '';
                             $matchText = '';
                             
+                            // Temizlenmiş başlık
+                            $cleanedTitle = cleanTitle($item['title']);
+                            
                             // Başlıkta arama
-                            if (stripos($item['title'], $search) !== false) {
+                            if (stripos($cleanedTitle, $search) !== false) {
                                 $matchType = 'title';
-                                $matchText = $item['title'];
+                                $matchText = $cleanedTitle;
                             } 
                             // Açıklamada arama
                             elseif (!empty($item['description']) && stripos($item['description'], $search) !== false) {
@@ -131,19 +134,11 @@ function cleanTitle($title) {
                             }
                         ?>
                             <div class="gallery-image-item" data-date="<?php echo strtotime($item['created_at']); ?>">
-                                <a href="images/uploads/<?php echo $item['image']; ?>" class="gallery-link" data-fancybox="gallery" data-caption="<?php 
-                                    // Başlıktaki (1/3) gibi ifadeleri temizle
-                                    $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
-                                    echo htmlspecialchars($cleanTitle); 
-                                ?>">
-                                    <img src="images/uploads/<?php echo $item['image']; ?>" alt="<?php echo htmlspecialchars($item['title']); ?>" loading="lazy">
+                                <a href="images/uploads/<?php echo $item['image']; ?>" class="gallery-link" data-fancybox="gallery" data-caption="<?php echo htmlspecialchars(cleanTitle($item['title'])); ?>">
+                                    <img src="images/uploads/<?php echo $item['image']; ?>" alt="<?php echo htmlspecialchars(cleanTitle($item['title'])); ?>" loading="lazy">
                                     <div class="gallery-item-overlay">
                                         <div class="gallery-item-info">
-                                            <h3><?php 
-                                                // Başlıktaki (1/3) gibi ifadeleri temizle
-                                                $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
-                                                echo highlightSearchTerm($cleanTitle, $search); 
-                                            ?></h3>
+                                            <h3><?php echo highlightSearchTerm(cleanTitle($item['title']), $search); ?></h3>
                                             
                                             <?php if (!empty($item['category_name'])): ?>
                                                 <span class="category"><?php echo highlightSearchTerm($item['category_name'], $search); ?></span>
@@ -173,11 +168,7 @@ function cleanTitle($title) {
                                     </div>
                                 </a>
                                 <div class="gallery-item-title">
-                                    <h4><?php 
-                                        // Başlıktaki (1/3) gibi ifadeleri temizle
-                                        $cleanTitle = preg_replace('/\s*\(\d+\/\d+\)/', '', $item['title']);
-                                        echo highlightSearchTerm($cleanTitle, $search); 
-                                    ?></h4>
+                                    <h4><?php echo highlightSearchTerm(cleanTitle($item['title']), $search); ?></h4>
                                     <?php if (!empty($item['category_name'])): ?>
                                         <span class="category-badge"><?php echo highlightSearchTerm($item['category_name'], $search); ?></span>
                                     <?php endif; ?>
