@@ -103,7 +103,7 @@
 /* İstatistikler Bölümü */
 .stats-section {
     padding: 50px 0;
-    background: linear-gradient(rgba(231, 76, 60, 0.9), rgba(231, 76, 60, 0.9)), url('../images/stats-bg.jpg');
+    background: linear-gradient(rgba(231, 76, 60, 0.9), rgba(231, 76, 60, 0.9)), url('../assets/images/stats-bg.jpg');
     background-size: cover;
     background-position: center;
     color: #fff;

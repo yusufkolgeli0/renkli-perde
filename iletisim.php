@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İletişim - Renkli Perde Tasarım</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/contact.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/contact.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .map-qr-section {
@@ -99,7 +99,7 @@
                 </div>
                 <div class="qr-container">
                     <h2>İletişim Bilgilerimiz</h2>
-                    <img src="/images/qr-code.png" alt="İletişim Bilgileri QR Kodu">
+                    <img src="assets/images/qr-code.png" alt="İletişim Bilgileri QR Kodu">
                     <p class="qr-description">QR kodu telefonunuzla tarayarak iletişim bilgilerimizi rehberinize kaydedebilirsiniz.</p>
                 </div>
             </div>

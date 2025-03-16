@@ -5,7 +5,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <div class="container">
         <div class="logo">
             <a href="/">
-                <img src="images/logo.png" alt="Renkli Perde Tasarım Logo">
+                <img src="assets/images/logo.png" alt="Renkli Perde Tasarım Logo">
             </a>
         </div>
         <div class="menu-toggle">

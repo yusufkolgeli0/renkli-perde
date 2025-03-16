@@ -48,13 +48,13 @@ try {
     $_SESSION['success_message'] = 'Görsel başarıyla yüklendi!';
     
     // Yönlendirme yap
-    header('Location: ../gallery.php');
+    header('Location: ../galeri.php');
     exit;
 
 } catch (Exception $e) {
     session_start();
     $_SESSION['error_message'] = $e->getMessage();
-    header('Location: ../gallery.php');
+    header('Location: ../galeri.php');
     exit;
 }
 ?>
