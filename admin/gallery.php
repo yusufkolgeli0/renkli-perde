@@ -882,15 +882,16 @@ function displayGalleryItems(containerId, items) {
 
     if (items.length === 0) {
         container.innerHTML = `
-            <div class="empty-gallery-message">
-                <i class="fas fa-images"></i>
-                <p>Bu kategoride henüz görsel bulunmuyor.</p>
+            <div class="empty-gallery-message text-center py-5">
+                <i class="fas fa-images fa-3x mb-3 text-muted"></i>
+                <p class="text-muted">Bu kategoride henüz görsel bulunmuyor.</p>
             </div>
         `;
         return;
     }
 
     items.forEach(item => {
+        const isSelected = selectedItems.has(item.id);
         container.innerHTML += `
             <div class="gallery-item">
                 <div class="card">
@@ -899,7 +900,7 @@ function displayGalleryItems(containerId, items) {
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" 
                                        onchange="handleItemSelection(${item.id}, this)"
-                                       ${selectedItems.has(item.id) ? 'checked' : ''}>
+                                       ${isSelected ? 'checked' : ''}>
                             </div>
                         </div>
                         <img src="../images/uploads/${item.image}" class="card-img-top" alt="${item.title}"
@@ -944,6 +945,10 @@ function updateBulkActionsBar() {
         });
     } else {
         bulkActionsBar.classList.remove('show');
+        // Tüm checkbox'ları temizle
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            checkbox.checked = false;
+        });
     }
 }
 
@@ -1119,39 +1124,29 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async func
     
     try {
         const response = await fetch(`process/delete_gallery.php?id=${deleteItemId}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
+            method: 'DELETE'
         });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
 
         const data = await response.json();
         
-        if (!data || !data.success) {
-            throw new Error(data.message || 'Silme işlemi başarısız oldu.');
-        }
-
         // Modal'ı kapat
         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
         if (modal) {
             modal.hide();
         }
 
-        // Galeriyi güncelle
+        // Seçili öğeyi kaldır ve bulk actions bar'ı güncelle
+        selectedItems.delete(deleteItemId);
+        updateBulkActionsBar();
+
+        // Galeriyi güncelle ve bildirimi göster
         await loadGallery();
-        
-        // Bildirimi göster ve istatistikleri güncelle
         showNotification('Görsel başarıyla silindi.', 'success');
         loadStats();
 
     } catch (error) {
         console.error('Error:', error);
-        showNotification(error.message || 'Görsel silinirken bir hata oluştu.', 'error');
+        showNotification('Görsel silinirken bir hata oluştu.', 'error');
     } finally {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
@@ -1243,7 +1238,7 @@ function showBulkDeleteConfirm() {
     modal.show();
 }
 
-document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() {
+document.getElementById('confirmBulkDeleteBtn').addEventListener('click', async function() {
     if (selectedItems.size === 0) return;
     
     const btn = this;
@@ -1251,32 +1246,35 @@ document.getElementById('confirmBulkDeleteBtn').addEventListener('click', functi
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...';
     
-    const deletePromises = Array.from(selectedItems).map(id => 
-        fetch(`process/delete_gallery.php?id=${id}`, { method: 'DELETE' })
-            .then(response => response.json())
-    );
-    
-    Promise.all(deletePromises)
-        .then(results => {
-            const successCount = results.filter(r => r.success).length;
-            bootstrap.Modal.getInstance(document.getElementById('bulkDeleteConfirmModal')).hide();
+    try {
+        const deletePromises = Array.from(selectedItems).map(id => 
+            fetch(`process/delete_gallery.php?id=${id}`, { method: 'DELETE' })
+                .then(response => response.json())
+        );
+        
+        const results = await Promise.all(deletePromises);
+        const successCount = results.filter(r => r.success).length;
+        
+        // Modal'ı kapat
+        bootstrap.Modal.getInstance(document.getElementById('bulkDeleteConfirmModal')).hide();
+        
+        if (successCount > 0) {
+            // Seçimleri temizle
+            selectedItems.clear();
+            updateBulkActionsBar();
             
-            if (successCount > 0) {
-                showNotification(`${successCount} görsel başarıyla silindi.`, 'success');
-                loadGallery();
-                cancelSelection();
-            } else {
-                showNotification('Görseller silinirken bir hata oluştu.', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Bir hata oluştu.', 'error');
-        })
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerHTML = originalHtml;
-        });
+            // Galeriyi güncelle ve bildirimi göster
+            await loadGallery();
+            showNotification(`${successCount} görsel başarıyla silindi.`, 'success');
+            loadStats();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Görseller silinirken bir hata oluştu.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    }
 });
 
 function showNotification(message, type = 'success') {
